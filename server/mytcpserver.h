@@ -1,6 +1,8 @@
 #ifndef MYTCPSERVER_H
 #define MYTCPSERVER_H
 
+#include "mytcpsocket.h"
+
 #include <QTcpServer>
 
 
@@ -16,7 +18,7 @@ private:
     MyTcpServer();
     MyTcpServer(const MyTcpServer&) = delete;
     MyTcpServer& operator=(const MyTcpServer&) = delete;
-    QList<QTcpServer*> m_tcpSocketList;
+    QList<MyTcpSocket*> m_tcpSocketList;
 };
 
 #endif // MYTCPSERVER_H
