@@ -54,20 +54,20 @@ void Client::showConnect()
 
 
 
-void Client::on_send_PB_clicked()
-{
+//void Client::on_send_PB_clicked()
+//{
 
-    QString strMsg =  ui->input_LE->text();
-    if(strMsg.isEmpty()){
-        QMessageBox::warning(this,"发送消息","消息框不能为空");
-        return;
-    }
-    qDebug()<<"on_send_PB_clicked MSG"<<strMsg;
-    PDU* pdu = mkPDU(strMsg.size());
-    pdu->uiMsgType = ENUM_MSG_TYPE_REGIST_REQUEST;
-    memcpy(pdu->caData,"登录",sizeof("登录"));
-    memcpy(pdu->caMsg,strMsg.toStdString().c_str(),strMsg.size());
-    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
-    free(pdu);
-    pdu=nullptr;
-}
+//    QString strMsg =  ui->input_LE->text();
+//    if(strMsg.isEmpty()){
+//        QMessageBox::warning(this,"发送消息","消息框不能为空");
+//        return;
+//    }
+//    qDebug()<<"on_send_PB_clicked MSG"<<strMsg;
+//    PDU* pdu = mkPDU(strMsg.size());
+//    pdu->uiMsgType = ENUM_MSG_TYPE_REGIST_REQUEST;
+//    memcpy(pdu->caData,"登录",sizeof("登录"));
+//    memcpy(pdu->caMsg,strMsg.toStdString().c_str(),strMsg.size());
+//    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
+//    free(pdu);
+//    pdu=nullptr;
+//}
