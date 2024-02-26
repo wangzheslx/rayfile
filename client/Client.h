@@ -20,6 +20,9 @@ public:
 
 public slots:
     void showConnect();
+private slots:
+    void on_send_PB_clicked();
+
 private:
     Ui::Client *ui;
     QString m_strIP;

@@ -19,11 +19,13 @@ SOURCES += \
     main.cpp \
     mytcpserver.cpp \
     mytcpsocket.cpp \
+    protocol.cpp \
     server.cpp
 
 HEADERS += \
     mytcpserver.h \
     mytcpsocket.h \
+    protocol.h \
     server.h
 
 FORMS += \

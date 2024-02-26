@@ -17,10 +17,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Client.cpp \
-    main.cpp
+    main.cpp \
+    protocol.cpp
 
 HEADERS += \
-    Client.h
+    Client.h \
+    protocol.h
 
 FORMS += \
     Client.ui
