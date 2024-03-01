@@ -42,6 +42,36 @@ bool OperateDb::handleRegist(char *name, char *pwd)
     return q.exec(sql);//返回运行结果
 }
 
+bool OperateDb::handleLogin(char *name, char *pwd)
+{
+    qDebug()<<"用户登录数据库操作";
+    if(name ==NULL||pwd == NULL){
+        qDebug()<<"handleLogin 返回值 name == NULL||pwd == NULL";
+        return false;
+    }
+    QString sql = QString("select * from user_info where name = '%1' and pwd = '%2'").arg(name).arg(pwd);
+    QSqlQuery q;
+    if(!q.exec(sql) || !q.next()){
+         qDebug()<<"handleRegist QSqlQuery 返回值 !q.exec(sql) || !q.next()";
+         return false;
+    }
+    sql = QString("update user_info set online = 1 where name = '%1'").arg(name);
+    return q.exec(sql);
+}
+
+void OperateDb::handleoffline(const char *name)
+{
+    qDebug()<<"用户登出数据库操作";
+    if(name == NULL){
+        qDebug()<<"handleoffline 返回值 name == NULL";
+        return;
+    }
+    QString sql = QString("update user_info set online = 0 where name = '%1'").arg(name);
+    QSqlQuery q;
+    qDebug()<<"将用户"<<name<<"online置位0";
+    q.exec(sql);
+}
+
 OperateDb::~OperateDb()
 {
     m_db.close();

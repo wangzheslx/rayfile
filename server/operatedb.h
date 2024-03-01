@@ -12,6 +12,8 @@ public:
     static OperateDb& getinstance();
     void sql_connect();
     bool handleRegist(char* name,char* pwd);
+    bool handleLogin(char* name,char* pwd);
+    void handleoffline(const char *name);
     ~OperateDb();
 
 private:

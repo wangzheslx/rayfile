@@ -77,6 +77,16 @@ void Client::recvMsg()
         }
         break;
     }
+    case ENUM_MSG_TYPE_LOGIN_RESPEND:{
+        bool ret;
+        memcpy(&ret,pdu->caData,sizeof(bool));
+        if(ret){
+            QMessageBox::information(this,"登录","登录成功");
+        }else{
+            QMessageBox::information(this,"登录","登录失败，使用错误的名称或密码");
+        }
+        break;
+    }
     default:
         break;
     }
@@ -119,7 +129,28 @@ void Client::on_regist_PB_clicked()
     pdu->uiMsgType = ENUM_MSG_TYPE_REGIST_REQUEST;
     memcpy(pdu->caData,strName.toStdString().c_str(),strName.size());
     memcpy(pdu->caData+32,strPwd.toStdString().c_str(),strPwd.size());
-    qDebug()<<"strName: "<<strName<<"strPwd: "<<strPwd;
+    qDebug()<<"注册 strName: "<<strName<<"strPwd: "<<strPwd;
+    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
+    free(pdu);
+    pdu = NULL;
+}
+
+void Client::on_login_PB_clicked()
+{
+    //用户登录按钮客户端代码实现
+    qDebug()<<"用户界面注册操作";
+    QString strName = ui->username_LE->text();
+    QString strPwd = ui->password_LE->text();
+    if(strName.isEmpty()||strPwd.isEmpty()||strName.size()>32||strPwd.size()>32){
+        QMessageBox::critical(this,"登录","用户名或密码为空或过长");
+        return;
+    }
+    //构建pdu，不需要message大小
+    PDU* pdu = mkPDU(0);
+    pdu->uiMsgType = ENUM_MSG_TYPE_LOGIN_REQUEST;
+    memcpy(pdu->caData,strName.toStdString().c_str(),strName.size());
+    memcpy(pdu->caData+32,strPwd.toStdString().c_str(),strPwd.size());
+    qDebug()<<"登录 strName: "<<strName<<"strPwd: "<<strPwd;
     m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
     free(pdu);
     pdu = NULL;

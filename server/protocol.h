@@ -9,8 +9,12 @@ typedef unsigned int uint;
 //登录状态状态机
 enum ENUM_MSG_TYPE{
     ENUM_MSG_TYPE_MIN = 0,
+    //注册
     ENUM_MSG_TYPE_REGIST_REQUEST,
     ENUM_MSG_TYPE_REGIST_RESPEND,
+    //登录
+    ENUM_MSG_TYPE_LOGIN_REQUEST,
+    ENUM_MSG_TYPE_LOGIN_RESPEND,
     ENUM_MSG_TYPE_MAX = 0x00ffffff,
 };
 //协议数据结构体

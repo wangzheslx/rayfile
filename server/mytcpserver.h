@@ -13,7 +13,8 @@ public:
     static MyTcpServer& getInstance();
     void incomingConnection(qintptr handle) override;
 
-
+public slots:
+    void deleteSocket(MyTcpSocket * mytcpsocket);
 private:
     MyTcpServer();
     MyTcpServer(const MyTcpServer&) = delete;

@@ -16,10 +16,26 @@ void MyTcpServer::incomingConnection(qintptr handle)
     ptcpsocket->setSocketDescriptor(handle);
     //将新的socket加入socket列表
     m_tcpSocketList.append(ptcpsocket);
+    connect(ptcpsocket,&MyTcpSocket::offline,this,&MyTcpServer::deleteSocket);
     //测试连接的客户端
 //    foreach(MyTcpSocket *ptcpsocket,m_tcpSocketList){
 //        qDebug()<<ptcpsocket;
-//    }
+    //    }
+}
+
+void MyTcpServer::deleteSocket(MyTcpSocket* mytcpsocket)
+{
+    //tcpserver删除socket列表操作,槽函数
+    qDebug()<<"tcpserver删除socket列表操作";
+    m_tcpSocketList.removeOne(mytcpsocket);
+    //不能立即删除socket，因为mytcpsocket里面的程序还在运行
+    mytcpsocket->deleteLater();//延迟删除
+    mytcpsocket = NULL;
+    qDebug()<<"当前剩余客户端数量"<<m_tcpSocketList.size();
+    qDebug()<<"剩余客户端名称：";
+    foreach(MyTcpSocket* m_socket,m_tcpSocketList){
+        qDebug()<<m_socket->m_strLogName;
+    }
 }
 
 MyTcpServer::MyTcpServer()

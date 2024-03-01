@@ -25,6 +25,8 @@ private slots:
     void recvMsg();
     void on_regist_PB_clicked();
 
+    void on_login_PB_clicked();
+
 private:
     Ui::Client *ui;
     QString m_strIP;
