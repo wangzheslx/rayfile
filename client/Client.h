@@ -22,6 +22,8 @@ public slots:
     void showConnect();
 private slots:
     //void on_send_PB_clicked();
+    void recvMsg();
+    void on_regist_PB_clicked();
 
 private:
     Ui::Client *ui;

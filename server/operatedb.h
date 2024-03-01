@@ -11,6 +11,7 @@ public:
     QSqlDatabase m_db;//数据库对象
     static OperateDb& getinstance();
     void sql_connect();
+    bool handleRegist(char* name,char* pwd);
     ~OperateDb();
 
 private:

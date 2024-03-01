@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QSqlError>
+#include <QSqlQuery>
 OperateDb &OperateDb::getinstance()
 {
     static OperateDb instance;
@@ -21,6 +22,24 @@ void OperateDb::sql_connect()
     }else{
         QMessageBox::critical(0,"连接数据库",m_db.lastError().text());
     }
+}
+
+bool OperateDb::handleRegist(char *name, char *pwd)
+{
+    qDebug()<< "用户注册数据库操作";
+    if(name == NULL||pwd == NULL){
+        qDebug()<<"handleRegist 返回值 name == NULL||pwd == NULL";
+        return false;
+    }
+    QString sql = QString("select * from user_info where name = '%1'").arg(name);
+    QSqlQuery q;
+    //exec()语句是否运行 next()是否有值
+    if(!q.exec(sql)||q.next()){
+         qDebug()<<"handleRegist QSqlQuery 返回值 !q.exec(sql)||q.next()";
+        return false;
+    }
+    sql = QString("insert into user_info(name ,pwd) values('%1','%2')").arg(name).arg(pwd);
+    return q.exec(sql);//返回运行结果
 }
 
 OperateDb::~OperateDb()
