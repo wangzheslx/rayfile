@@ -1,6 +1,7 @@
 #include "Client.h"
 #include "ui_Client.h"
 #include "protocol.h"
+#include "index.h"
 #include <QString>
 #include <QFile>
 #include <QHostAddress>
@@ -82,6 +83,8 @@ void Client::recvMsg()
         memcpy(&ret,pdu->caData,sizeof(bool));
         if(ret){
             QMessageBox::information(this,"登录","登录成功");
+            Index::getinstance().show();
+            this->hide();
         }else{
             QMessageBox::information(this,"登录","登录失败，使用错误的名称或密码");
         }
