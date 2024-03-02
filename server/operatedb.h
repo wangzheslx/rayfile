@@ -14,6 +14,8 @@ public:
     bool handleRegist(char* name,char* pwd);
     bool handleLogin(char* name,char* pwd);
     void handleoffline(const char *name);
+    int handleFindUser(const char *name);
+    QStringList handleOnlineUser();
     ~OperateDb();
 
 private:

@@ -2,7 +2,7 @@
 #define FRIEND_H
 
 #include <QWidget>
-
+#include"onlineuser.h"
 namespace Ui {
 class Friend;
 }
@@ -13,10 +13,17 @@ class Friend : public QWidget
 
 public:
     explicit Friend(QWidget *parent = nullptr);
+    OnlineUser*getonlineuser();
     ~Friend();
+
+private slots:
+    void on_findUser_PB_clicked();
+
+    void on_onlineUser_PB_clicked();
 
 private:
     Ui::Friend *ui;
+    OnlineUser* m_onlineuser;
 };
 
 #endif // FRIEND_H

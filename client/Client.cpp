@@ -15,6 +15,11 @@ Client &Client::getInstance()
     return instance;
 }
 
+QTcpSocket &Client::getTcpsocket()
+{
+    return m_tcpsocket;
+}
+
 Client::Client(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Client)
@@ -87,6 +92,20 @@ void Client::recvMsg()
             this->hide();
         }else{
             QMessageBox::information(this,"登录","登录失败，使用错误的名称或密码");
+        }
+        break;
+    }
+    case ENUM_MSG_TYPE_FINDUSER_RESPEND:{
+        char name[32] = {'\0'};
+        int ret;
+        memcpy(name,pdu->caData,32);
+        memcpy(&ret,pdu->caData+32,sizeof(int));
+        if(ret == 1){
+            QMessageBox::information(this,"搜索",QString("%1用户存在并且在线").arg(name));
+        }else if(ret == 0){
+            QMessageBox::information(this,"搜索",QString("%1用户存在但是不在线").arg(name));
+        }else if(ret == -1){
+            QMessageBox::critical(this,"搜索","没有查到此用户");
         }
         break;
     }

@@ -72,6 +72,35 @@ void OperateDb::handleoffline(const char *name)
     q.exec(sql);
 }
 
+int OperateDb::handleFindUser(const char *name)
+{
+    qDebug()<<"用户好友界面查找数据库操作进行";
+    if(name ==NULL){
+        qDebug()<<"handleFindUser name ==NULL";
+        return -1;
+    }
+    QString sql = QString("select online from user_info where name= '%1'").arg(name);
+    QSqlQuery q;
+    q.exec(sql);
+    if(q.next()){
+        return q.value(0).toInt();
+    }
+    return -1;
+}
+
+QStringList OperateDb::handleOnlineUser()
+{
+    qDebug()<<"用户好友界面数据库查找在线用户进行";
+    QString sql = QString("select name from user_info where online = 1");
+    QSqlQuery q;
+    q.exec(sql);
+    QStringList result;
+    while(q.next()){
+        result.append(q.value(0).toString());
+    }
+    return result;
+}
+
 OperateDb::~OperateDb()
 {
     m_db.close();

@@ -14,7 +14,7 @@ class Client : public QWidget
 
 public:
     static Client& getInstance();
-
+    QTcpSocket& getTcpsocket();
     ~Client();
     void loadConfig();
 

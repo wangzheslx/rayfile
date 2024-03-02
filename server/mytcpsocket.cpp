@@ -66,6 +66,36 @@ void MyTcpSocket::recvMsg()
         respdu = NULL;
         break;
     }
+    case ENUM_MSG_TYPE_FINDUSER_REQUEST:{
+        qDebug()<<"服务器用户查找请求实现";
+        char strname[32] = {'\0'};
+        memcpy(strname,pdu->caData,32);
+        int ret =  OperateDb::getinstance().handleFindUser(strname);
+
+        //构建返回的pdu
+        PDU * respdu = mkPDU(0);
+        respdu->uiMsgType = ENUM_MSG_TYPE_FINDUSER_RESPEND;
+        memcpy(respdu->caData,strname,32);
+        memcpy(respdu->caData+32,&ret,sizeof(int));
+        this->write((char*)respdu,respdu->uiPDUlen);
+        free(respdu);
+        respdu = NULL;
+        break;
+    }
+    case ENUM_MSG_TYPE_ONLINEUSER_REQUEST:{
+        qDebug()<<"服务器用户在线显示请求实现";
+        QStringList result = OperateDb::getinstance().handleOnlineUser();
+        PDU * pdu = mkPDU(result.size()*32);
+        pdu->uiMsgType = ENUM_MSG_TYPE_ONLINEUSER_RESPEND;
+        for(int i = 0;i<result.size();i++){
+            memcpy(pdu->caData+i*32,result.at(i).toStdString().c_str(),32);
+            qDebug()<<"在线用户 "<<i+1<< ":" << result.at(i);
+        }
+        this->write((char*)pdu,pdu->uiPDUlen);
+        free(pdu);
+        pdu = NULL;
+        break;
+    }
     default:
         break;
     }
