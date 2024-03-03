@@ -12,3 +12,9 @@ OnlineUser::~OnlineUser()
 {
     delete ui;
 }
+
+void OnlineUser::showOnlineUser(QStringList mlist)
+{
+    ui->listWidget->clear();
+    ui->listWidget->addItems(mlist);
+}

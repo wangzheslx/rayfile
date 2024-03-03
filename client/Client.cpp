@@ -109,6 +109,17 @@ void Client::recvMsg()
         }
         break;
     }
+    case ENUM_MSG_TYPE_ONLINEUSER_RESPEND:{
+        uint usersize = pdu->uiMsgLen/32;
+        QStringList userlist;
+        for(int i = 0 ; i < usersize;i++){
+            char name[32] = {'\0'};
+            memcpy(name,pdu->caData+i*32,32);
+            userlist.append(QString(name));
+        }
+        Index::getinstance().getFriend()->getonlineuser()->showOnlineUser(userlist);
+        break;
+    }
     default:
         break;
     }

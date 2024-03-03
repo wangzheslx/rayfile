@@ -14,6 +14,7 @@ class OnlineUser : public QWidget
 public:
     explicit OnlineUser(QWidget *parent = nullptr);
     ~OnlineUser();
+    void showOnlineUser(QStringList mlist);
 
 private:
     Ui::OnlineUser *ui;

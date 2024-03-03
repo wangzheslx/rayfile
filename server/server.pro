@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    msghandle.cpp \
     mytcpserver.cpp \
     mytcpsocket.cpp \
     operatedb.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     server.cpp
 
 HEADERS += \
+    msghandle.h \
     mytcpserver.h \
     mytcpsocket.h \
     operatedb.h \
