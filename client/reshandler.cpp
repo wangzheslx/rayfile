@@ -1,12 +1,17 @@
 #include "reshandler.h"
+<<<<<<< HEAD
 #include "Client.h"
 #include "index.h"
 
 #include <QMessageBox>
+=======
+
+>>>>>>> 1d170dc3a1156077a71d836986baf2f9b3695700
 ResHandler::ResHandler()
 {
 
 }
+<<<<<<< HEAD
 
 void ResHandler::regist(PDU *pdu)
 {
@@ -59,3 +64,5 @@ void ResHandler::onlineuser(PDU *pdu)
     }
     Index::getinstance().getFriend()->getonlineuser()->showOnlineUser(userlist);
 }
+=======
+>>>>>>> 1d170dc3a1156077a71d836986baf2f9b3695700
