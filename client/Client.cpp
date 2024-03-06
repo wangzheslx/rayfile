@@ -29,6 +29,7 @@ Client::Client(QWidget *parent)
     connect(&m_tcpsocket,&QTcpSocket::connected,this,&Client::showConnect);
     connect(&m_tcpsocket,&QTcpSocket::readyRead,this,&Client::recvMsg);
     m_tcpsocket.connectToHost(QHostAddress(m_strIP),m_usPort);
+    m_pmh = new ResHandler;
 }
 
 Client::~Client()
@@ -51,15 +52,10 @@ void Client::loadConfig()
         QMessageBox::critical(this,"打开配置","打开配置失败");
     }
 //    m_strIP = "127.0.0.1";
-//    m_usPort = 5000;
+    //    m_usPort = 5000;
 }
 
-void Client::showConnect()
-{
-    qDebug()<<"连接服务器成功";
-}
-
-void Client::recvMsg()
+PDU *Client::readPDU()
 {
     qDebug()<<"接收消息长度"<<m_tcpsocket.bytesAvailable();
     uint uiPDULen = 0;
@@ -72,52 +68,26 @@ void Client::recvMsg()
     qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
            <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
           <<"数据"<<pdu->caMsg;
+    return pdu;
+}
+
+void Client::handlePDU(PDU *pdu)
+{
     switch(pdu->uiMsgType){
     case ENUM_MSG_TYPE_REGIST_RESPEND:{
-        bool ret;
-        memcpy(&ret,pdu->caData,sizeof(bool));
-        if(ret){
-            QMessageBox::information(this,"注册","注册成功");
-        }else{
-            QMessageBox::information(this,"注册","注册失败，使用非法的名称或密码");
-        }
+        m_pmh->regist(pdu);
         break;
     }
     case ENUM_MSG_TYPE_LOGIN_RESPEND:{
-        bool ret;
-        memcpy(&ret,pdu->caData,sizeof(bool));
-        if(ret){
-            QMessageBox::information(this,"登录","登录成功");
-            Index::getinstance().show();
-            this->hide();
-        }else{
-            QMessageBox::information(this,"登录","登录失败，使用错误的名称或密码");
-        }
+        m_pmh->login(pdu);
         break;
     }
     case ENUM_MSG_TYPE_FINDUSER_RESPEND:{
-        char name[32] = {'\0'};
-        int ret;
-        memcpy(name,pdu->caData,32);
-        memcpy(&ret,pdu->caData+32,sizeof(int));
-        if(ret == 1){
-            QMessageBox::information(this,"搜索",QString("%1用户存在并且在线").arg(name));
-        }else if(ret == 0){
-            QMessageBox::information(this,"搜索",QString("%1用户存在但是不在线").arg(name));
-        }else if(ret == -1){
-            QMessageBox::critical(this,"搜索","没有查到此用户");
-        }
+        m_pmh->finduser(pdu);
         break;
     }
     case ENUM_MSG_TYPE_ONLINEUSER_RESPEND:{
-        uint usersize = pdu->uiMsgLen/32;
-        QStringList userlist;
-        for(int i = 0 ; i < usersize;i++){
-            char name[32] = {'\0'};
-            memcpy(name,pdu->caData+i*32,32);
-            userlist.append(QString(name));
-        }
-        Index::getinstance().getFriend()->getonlineuser()->showOnlineUser(userlist);
+        m_pmh->onlineuser(pdu);
         break;
     }
     default:
@@ -125,6 +95,17 @@ void Client::recvMsg()
     }
     free(pdu);
     pdu = NULL;
+}
+
+void Client::showConnect()
+{
+    qDebug()<<"连接服务器成功";
+}
+
+void Client::recvMsg()
+{
+    PDU* pdu = readPDU();
+    handlePDU(pdu);
 }
 
 

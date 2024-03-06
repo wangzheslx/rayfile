@@ -1,6 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include "protocol.h"
+#include "reshandler.h"
 #include <QTcpSocket>
 #include <QWidget>
 
@@ -17,6 +19,9 @@ public:
     QTcpSocket& getTcpsocket();
     ~Client();
     void loadConfig();
+    PDU* readPDU();
+    void handlePDU(PDU* pdu);
+    ResHandler* m_pmh;
 
 public slots:
     void showConnect();
