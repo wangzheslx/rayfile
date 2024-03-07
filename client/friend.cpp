@@ -39,9 +39,7 @@ void Friend::on_findUser_PB_clicked()
         PDU *pdu = mkPDU(0);
         pdu->uiMsgType = ENUM_MSG_TYPE_FINDUSER_REQUEST;
         memcpy(pdu->caData,strname.toStdString().c_str(),strname.size());
-        Client::getInstance().getTcpsocket().write((char*)pdu,pdu->uiPDUlen);
-        free(pdu);
-        pdu = NULL;
+        Client::getInstance().sendPDU(pdu);
     }
 
 }
@@ -51,11 +49,15 @@ void Friend::on_onlineUser_PB_clicked()
     //好友界面显示所有在线用户界面
     PDU*pdu = mkPDU(0);
     pdu->uiMsgType = ENUM_MSG_TYPE_ONLINEUSER_REQUEST;
-    Client::getInstance().getTcpsocket().write((char*)pdu,pdu->uiPDUlen);
-    free(pdu);
-    pdu = NULL;
+    Client::getInstance().sendPDU(pdu);
     qDebug()<<"好友界面显示所有在线用户界面";
     if(m_onlineuser->isHidden()){
         m_onlineuser->show();
     }
+}
+
+void Friend::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+
+
 }

@@ -12,7 +12,7 @@ class MyTcpServer : public QTcpServer
 public:
     static MyTcpServer& getInstance();
     void incomingConnection(qintptr handle) override;
-
+    void resend(char *tarName,PDU* pdu);
 public slots:
     void deleteSocket(MyTcpSocket * mytcpsocket);
 private:

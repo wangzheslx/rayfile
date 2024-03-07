@@ -60,6 +60,8 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         return m_pmh->FindUser(pdu);
     case ENUM_MSG_TYPE_ONLINEUSER_REQUEST:
         return m_pmh->OnlineUser();
+    case ENUM_MSG_TYPE_ADD_FRIEND_REQUEST:
+        return m_pmh->AddFriend(pdu);
     default:
         break;
     }

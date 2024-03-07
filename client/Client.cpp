@@ -65,9 +65,7 @@ PDU *Client::readPDU()
     PDU *pdu = mkPDU(uiMSGLen);
     //继续读取剩余数据
     m_tcpsocket.read((char*)pdu+sizeof(uint),uiPDULen-sizeof(uint));
-    qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
-           <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
-          <<"数据"<<pdu->caMsg;
+
     return pdu;
 }
 
@@ -93,6 +91,16 @@ void Client::handlePDU(PDU *pdu)
     default:
         break;
     }
+    free(pdu);
+    pdu = NULL;
+}
+
+void Client::sendPDU(PDU *pdu)
+{
+    qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
+           <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
+          <<"数据"<<pdu->caMsg;
+    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
     free(pdu);
     pdu = NULL;
 }
@@ -144,15 +152,13 @@ void Client::on_regist_PB_clicked()
     memcpy(pdu->caData,strName.toStdString().c_str(),strName.size());
     memcpy(pdu->caData+32,strPwd.toStdString().c_str(),strPwd.size());
     qDebug()<<"注册 strName: "<<strName<<"strPwd: "<<strPwd;
-    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
-    free(pdu);
-    pdu = NULL;
+    sendPDU(pdu);
 }
 
 void Client::on_login_PB_clicked()
 {
     //用户登录按钮客户端代码实现
-    qDebug()<<"用户界面注册操作";
+    qDebug()<<"用户界面登录操作";
     QString strName = ui->username_LE->text();
     QString strPwd = ui->password_LE->text();
     if(strName.isEmpty()||strPwd.isEmpty()||strName.size()>32||strPwd.size()>32){
@@ -165,7 +171,6 @@ void Client::on_login_PB_clicked()
     memcpy(pdu->caData,strName.toStdString().c_str(),strName.size());
     memcpy(pdu->caData+32,strPwd.toStdString().c_str(),strPwd.size());
     qDebug()<<"登录 strName: "<<strName<<"strPwd: "<<strPwd;
-    m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
-    free(pdu);
-    pdu = NULL;
+    m_strLogName= strName;
+    sendPDU(pdu);
 }

@@ -59,6 +59,9 @@ void ResHandler::onlineuser(PDU *pdu)
     for(uint i = 0 ; i < usersize;i++){
         char name[32] = {'\0'};
         memcpy(name,pdu->caData+i*32,32);
+        if(QString(name) == Client::getInstance().m_strLogName){
+            continue;
+        }
         userlist.append(QString(name));
     }
     Index::getinstance().getFriend()->getonlineuser()->showOnlineUser(userlist);

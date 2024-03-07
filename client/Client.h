@@ -21,7 +21,9 @@ public:
     void loadConfig();
     PDU* readPDU();
     void handlePDU(PDU* pdu);
+    void sendPDU(PDU* pdu);
     ResHandler* m_pmh;
+    QString m_strLogName;
 
 public slots:
     void showConnect();

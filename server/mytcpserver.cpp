@@ -23,6 +23,19 @@ void MyTcpServer::incomingConnection(qintptr handle)
     //    }
 }
 
+void MyTcpServer::resend(char *tarName, PDU *pdu)
+{
+    if(tarName==NULL||pdu==NULL){
+        return;
+    }
+    for(int i = 0;i<m_tcpSocketList.size();i++){
+        if(tarName==m_tcpSocketList.at(i)->m_strLogName){
+            qDebug()<<"成功转发";
+            m_tcpSocketList.at(i)->write((char*)pdu,pdu->uiPDUlen);
+        }
+    }
+}
+
 void MyTcpServer::deleteSocket(MyTcpSocket* mytcpsocket)
 {
     //tcpserver删除socket列表操作,槽函数

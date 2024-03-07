@@ -16,6 +16,7 @@ public:
     void handleoffline(const char *name);
     int handleFindUser(const char *name);
     QStringList handleOnlineUser();
+    int handleAddFriend(const char* curName,const char* tarName);
     ~OperateDb();
 
 private:

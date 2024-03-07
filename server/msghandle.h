@@ -15,6 +15,7 @@ public:
     PDU* Login(PDU* pdu,QString & strusername);
     PDU* FindUser(PDU* pdu);
     PDU* OnlineUser();
+    PDU* AddFriend(PDU*pdu);
 };
 
 #endif // MSGHANDLE_H

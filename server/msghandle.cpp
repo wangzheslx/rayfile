@@ -1,4 +1,5 @@
 #include "msghandle.h"
+#include "mytcpserver.h"
 #include "operatedb.h"
 #include<QDebug>
 MsgHandle::MsgHandle()
@@ -73,4 +74,22 @@ PDU *MsgHandle::OnlineUser()
         qDebug()<<"在线用户 "<<i+1<< ":" << result.at(i);
     }
     return respdu;
+}
+
+PDU *MsgHandle::AddFriend(PDU* pdu)
+{
+    qDebug()<<"服务器用户添加好友请求";
+    char caCurName[32] = {'\0'};
+    char caTarName[32] = {'\0'};
+    memcpy(caCurName,pdu->caData,32);
+    memcpy(caCurName,pdu->caData+32,32);
+    int ret = OperateDb::getinstance().handleAddFriend(caCurName,caTarName);
+    if(ret == 1){
+        MyTcpServer::getInstance().resend(caTarName,pdu);
+    }
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_RESPEND;
+    memcpy(respdu->caData,&ret,sizeof(int));
+    return respdu;
+
 }

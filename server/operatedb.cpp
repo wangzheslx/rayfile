@@ -101,6 +101,39 @@ QStringList OperateDb::handleOnlineUser()
     return result;
 }
 
+int OperateDb::handleAddFriend(const char *curName, const char *tarName)
+{
+    if(curName==NULL||tarName==NULL){
+        return -1;
+    }
+    qDebug()<<"用户好友界面添加好友进行";
+    QString sql = QString(R"(
+                          select * from friend where
+                          (
+                            user_id = (select id from user_info where name = '%1')
+                            and
+                            friend_id = (select id from user_info where name = '%2')
+                           )
+                          or
+                          (
+                            user_id = (select id from user_info where name = '%3')
+                            and
+                            friend_id = (select id from user_info where name = '%4')
+                          );
+                          )").arg(curName).arg(tarName).arg(tarName).arg(curName);
+    QSqlQuery s;
+    s.exec(sql);
+    if(!s.next()){
+        return -2;
+    }
+    sql = QString("select online from user_info where name= '%1'").arg(tarName);
+    s.exec(sql);
+    if(s.next()){
+        return s.value(0).toInt();
+    }
+    return -1;
+}
+
 OperateDb::~OperateDb()
 {
     m_db.close();
