@@ -104,6 +104,7 @@ QStringList OperateDb::handleOnlineUser()
 int OperateDb::handleAddFriend(const char *curName, const char *tarName)
 {
     if(curName==NULL||tarName==NULL){
+        qDebug()<<"添加好友为空";
         return -1;
     }
     qDebug()<<"用户好友界面添加好友进行";
@@ -121,17 +122,34 @@ int OperateDb::handleAddFriend(const char *curName, const char *tarName)
                             friend_id = (select id from user_info where name = '%4')
                           );
                           )").arg(curName).arg(tarName).arg(tarName).arg(curName);
-    QSqlQuery s;
-    s.exec(sql);
-    if(!s.next()){
+    QSqlQuery q;
+    q.exec(sql);
+    if(q.next()){
         return -2;
     }
     sql = QString("select online from user_info where name= '%1'").arg(tarName);
-    s.exec(sql);
-    if(s.next()){
-        return s.value(0).toInt();
+    q.exec(sql);
+    if(q.next()){
+        return q.value(0).toInt();
     }
     return -1;
+}
+
+void OperateDb::handleAgreefriend(const char *curName, const char *tarName)
+{
+    qDebug()<<"处理同意用户好友添加好友";
+    if(curName==NULL||tarName==NULL){
+        qDebug()<<"添加好友为空";
+        return ;
+    }
+    QString sql = QString(R"(
+                          insert into friend(user_id,friend_id)
+                          select u1.id,u2.id
+                          from user_info u1,user_info u2
+                          where u1.name = '%1' and u2.name = '%2';
+                          )").arg(curName).arg(tarName);
+    QSqlQuery q;
+    q.exec(sql);
 }
 
 OperateDb::~OperateDb()

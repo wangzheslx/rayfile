@@ -44,11 +44,11 @@ void ResHandler::finduser(PDU *pdu)
     memcpy(name,pdu->caData,32);
     memcpy(&ret,pdu->caData+32,sizeof(int));
     if(ret == 1){
-        QMessageBox::information(&Client::getInstance(),"搜索",QString("%1用户存在并且在线").arg(name));
+        QMessageBox::information(Index::getinstance().getFriend(),"搜索",QString("%1用户存在并且在线").arg(name));
     }else if(ret == 0){
-        QMessageBox::information(&Client::getInstance(),"搜索",QString("%1用户存在但是不在线").arg(name));
+        QMessageBox::information(Index::getinstance().getFriend(),"搜索",QString("%1用户存在但是不在线").arg(name));
     }else if(ret == -1){
-        QMessageBox::critical(&Client::getInstance(),"搜索","没有查到此用户");
+        QMessageBox::critical(Index::getinstance().getFriend(),"搜索","没有查到此用户");
     }
 }
 
@@ -65,5 +65,45 @@ void ResHandler::onlineuser(PDU *pdu)
         userlist.append(QString(name));
     }
     Index::getinstance().getFriend()->getonlineuser()->showOnlineUser(userlist);
+}
+
+void ResHandler::addfriendreturn(PDU *pdu)
+{
+    int ret;
+    memcpy(&ret,pdu->caData,sizeof(int));
+    qDebug()<<ret;
+    if(ret == -1){
+        QMessageBox::warning(Index::getinstance().getFriend(),"添加好友","添加错误");
+        return;
+    }
+    if(ret == 0){
+        QMessageBox::information(Index::getinstance().getFriend(),"添加好友","用户不在线");
+        return;
+    }
+    if(ret == -2){
+        QMessageBox::information(Index::getinstance().getFriend(),"添加好友","该用户已经是你的好友");
+        return;
+    }
+    //发送请求
+    QMessageBox::information(Index::getinstance().getFriend(),"添加好友","添加好友请求已发送，等待对方同意");
+}
+
+void ResHandler::requestaddfriend(PDU *pdu)
+{
+    char applyname[32] = {'\0'};
+    memcpy(applyname,pdu->caData,32);
+    int ret = QMessageBox::question(Index::getinstance().getFriend(),"添加好友请求",QString("%1请求添加你为好友，是否同意").arg(applyname));
+    if(ret != QMessageBox::Yes){
+        return;
+    }
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_AGREE_REQUEST;
+    memcpy(respdu->caData,pdu->caData,64);
+    Client::getInstance().sendPDU(respdu);
+}
+
+void ResHandler::respondaddfriend()
+{
+    QMessageBox::information(Index::getinstance().getFriend(),"添加好友","添加好友成功");
 }
 

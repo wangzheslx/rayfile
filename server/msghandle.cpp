@@ -81,8 +81,11 @@ PDU *MsgHandle::AddFriend(PDU* pdu)
     qDebug()<<"服务器用户添加好友请求";
     char caCurName[32] = {'\0'};
     char caTarName[32] = {'\0'};
+
+
     memcpy(caCurName,pdu->caData,32);
-    memcpy(caCurName,pdu->caData+32,32);
+    memcpy(caTarName,pdu->caData+32,32);
+
     int ret = OperateDb::getinstance().handleAddFriend(caCurName,caTarName);
     if(ret == 1){
         MyTcpServer::getInstance().resend(caTarName,pdu);
@@ -92,4 +95,18 @@ PDU *MsgHandle::AddFriend(PDU* pdu)
     memcpy(respdu->caData,&ret,sizeof(int));
     return respdu;
 
+}
+
+PDU *MsgHandle::AddFriendagree(PDU *pdu)
+{
+    qDebug()<<"有好友同意请求消息";
+    char caCurName[32] = {'\0'};
+    char caTarName[32] = {'\0'};
+    memcpy(caCurName,pdu->caData,32);
+    memcpy(caTarName,pdu->caData+32,32);
+    OperateDb::getinstance().handleAgreefriend(caCurName,caTarName);
+    PDU*respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_ADD_FRIEND_AGREE_RESPEND;
+    MyTcpServer::getInstance().resend(caCurName,respdu);
+    return respdu;
 }

@@ -88,6 +88,18 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->onlineuser(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_ADD_FRIEND_RESPEND:{
+        m_pmh->addfriendreturn(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_ADD_FRIEND_REQUEST:{
+        m_pmh->requestaddfriend(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_ADD_FRIEND_AGREE_RESPEND:{
+        m_pmh->respondaddfriend();
+        break;
+    }
     default:
         break;
     }

@@ -17,6 +17,7 @@ public:
     PDU* handleMsg(PDU* pdu);
     void sendPDU(PDU* pdu);
 
+
     QString m_strLogName;
     MsgHandle* m_pmh;
 private:

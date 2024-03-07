@@ -15,7 +15,9 @@ public:
     void login(PDU*pdu);
     void finduser(PDU*pdu);
     void onlineuser(PDU* pdu);
-
+    void addfriendreturn(PDU*pdu);
+    void requestaddfriend(PDU* pdu);
+    void respondaddfriend();
 };
 
 #endif // RESHANDLER_H
