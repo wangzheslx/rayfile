@@ -44,12 +44,19 @@ void ResHandler::finduser(PDU *pdu)
     memcpy(name,pdu->caData,32);
     memcpy(&ret,pdu->caData+32,sizeof(int));
     if(ret == 1){
-        QMessageBox::information(Index::getinstance().getFriend(),"搜索",QString("%1用户存在并且在线").arg(name));
+        QMessageBox::information(Index::getinstance().getFriend(),"搜索",QString("%1用户存在并且在线").arg(name),"添加好友","取消");
+        QString strCurname = Client::getInstance().m_strLogName;
+        PDU*pdu = mkPDU(0);
+        pdu->uiMsgType =ENUM_MSG_TYPE_ADD_FRIEND_REQUEST;
+        memcpy(pdu->caData,strCurname.toStdString().c_str(),32);
+        memcpy(pdu->caData+32,name,32);
+        Client::getInstance().sendPDU(pdu);
     }else if(ret == 0){
         QMessageBox::information(Index::getinstance().getFriend(),"搜索",QString("%1用户存在但是不在线").arg(name));
     }else if(ret == -1){
         QMessageBox::critical(Index::getinstance().getFriend(),"搜索","没有查到此用户");
     }
+
 }
 
 void ResHandler::onlineuser(PDU *pdu)
@@ -105,5 +112,17 @@ void ResHandler::requestaddfriend(PDU *pdu)
 void ResHandler::respondaddfriend()
 {
     QMessageBox::information(Index::getinstance().getFriend(),"添加好友","添加好友成功");
+}
+
+void ResHandler::getfriend(PDU *pdu)
+{
+    uint usersize = pdu->uiMsgLen/32;
+    QStringList friendlist;
+    for(uint i = 0;i < usersize;i++){
+        char name[32] = {'\0'};
+        memcpy(name,pdu->caData+i*32,32);
+        friendlist.append(QString(name));
+    }
+    Index::getinstance().getFriend()->showfriend(friendlist);
 }
 

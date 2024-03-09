@@ -100,6 +100,11 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->respondaddfriend();
         break;
     }
+    case ENUM_MSG_TYPE_GET_FRIEND_RESPEND:{
+        m_pmh->getfriend(pdu);
+        break;
+
+    }
     default:
         break;
     }

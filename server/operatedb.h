@@ -18,6 +18,7 @@ public:
     QStringList handleOnlineUser();
     int handleAddFriend(const char* curName,const char* tarName);
     void handleAgreefriend(const char* curName,const char* tarName);
+    QStringList handleGetfriend(const char*name);
     ~OperateDb();
 
 private:

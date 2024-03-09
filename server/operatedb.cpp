@@ -152,6 +152,31 @@ void OperateDb::handleAgreefriend(const char *curName, const char *tarName)
     q.exec(sql);
 }
 
+QStringList OperateDb::handleGetfriend(const char *name)
+{
+    qDebug()<<"数据库查找好友用户";
+    QString sql = QString("select id from user_info where name = '%1'").arg(name);
+    QSqlQuery q ;
+    q.exec(sql);
+    int id = 0;
+    if(q.next()){
+        id = q.value(0).toInt();
+    }
+    sql = QString(R"(select name from user_info where id in
+                  (select friend_id from friend where user_id  = '%1')
+                  union
+                  select name from user_info where id in
+                  (select user_id from friend where friend_id  = '%1')
+                  )").arg(id).arg(id);
+    q.exec(sql);
+    QStringList result;
+    while(q.next()){
+        result.append(q.value(0).toString());
+    }
+    return result;
+
+}
+
 OperateDb::~OperateDb()
 {
     m_db.close();

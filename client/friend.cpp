@@ -12,12 +12,28 @@ Friend::Friend(QWidget *parent) :
 {
     ui->setupUi(this);
     m_onlineuser = new OnlineUser;
+    on_flushFriend_PB_clicked();
 }
 
 OnlineUser *Friend::getonlineuser()
 {
     return m_onlineuser;
 }
+
+void Friend::getFriendRequest()
+{
+//    QString Curname = Client::getInstance().m_strLogName;
+//    PDU* pdu =
+    //    QStringList friendlist
+}
+
+void Friend::showfriend(QStringList list)
+{
+    ui->listWidget->clear();
+    ui->listWidget->addItems(list);
+}
+
+
 
 Friend::~Friend()
 {
@@ -60,4 +76,14 @@ void Friend::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
 
 
+}
+
+void Friend::on_flushFriend_PB_clicked()
+{
+    qDebug()<<"刷新好友";
+    QString Curname = Client::getInstance().m_strLogName;
+    PDU* pdu = mkPDU(0);
+    pdu->uiMsgType = ENUM_MSG_TYPE_GET_FRIEND_REQUEST;
+    memcpy(pdu->caData,Curname.toStdString().c_str(),32);
+    Client::getInstance().sendPDU(pdu);
 }

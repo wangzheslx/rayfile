@@ -110,3 +110,19 @@ PDU *MsgHandle::AddFriendagree(PDU *pdu)
     MyTcpServer::getInstance().resend(caCurName,respdu);
     return respdu;
 }
+
+PDU *MsgHandle::GetFriend(PDU *pdu)
+{
+    qDebug()<<"查找好友用户";
+    char Curname[32] = {'\0'};
+    memcpy(Curname,pdu->caData,32);
+    QStringList result = OperateDb::getinstance().handleGetfriend(Curname);
+    PDU * respdu = mkPDU(result.size()*32);
+    respdu->uiMsgType = ENUM_MSG_TYPE_GET_FRIEND_RESPEND;
+    for(int i = 0;i<result.size();i++){
+        memcpy(respdu->caData+i*32,result.at(i).toStdString().c_str(),32);
+        qDebug()<<"好友 "<<i+1<< ":" << result.at(i);
+    }
+    return respdu;
+
+}

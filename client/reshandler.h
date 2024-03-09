@@ -18,6 +18,7 @@ public:
     void addfriendreturn(PDU*pdu);
     void requestaddfriend(PDU* pdu);
     void respondaddfriend();
+    void getfriend(PDU*pdu);
 };
 
 #endif // RESHANDLER_H

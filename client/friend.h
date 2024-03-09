@@ -15,6 +15,8 @@ class Friend : public QWidget
 public:
     explicit Friend(QWidget *parent = nullptr);
     OnlineUser*getonlineuser();
+    void getFriendRequest();
+    void showfriend(QStringList list);
     ~Friend();
 
 private slots:
@@ -23,6 +25,8 @@ private slots:
     void on_onlineUser_PB_clicked();
 
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_flushFriend_PB_clicked();
 
 private:
     Ui::Friend *ui;
