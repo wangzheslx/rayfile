@@ -18,6 +18,8 @@ public:
     PDU* AddFriend(PDU*pdu);
     PDU* AddFriendagree (PDU*pdu);
     PDU* GetFriend(PDU*pdu);
+    PDU* DelFriend(PDU* pdu);
+
 };
 
 #endif // MSGHANDLE_H

@@ -19,6 +19,7 @@ public:
     int handleAddFriend(const char* curName,const char* tarName);
     void handleAgreefriend(const char* curName,const char* tarName);
     QStringList handleGetfriend(const char*name);
+    bool handleDelFriend(const char* curName,const char* tarName);
     ~OperateDb();
 
 private:

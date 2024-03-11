@@ -54,18 +54,28 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
     switch(pdu->uiMsgType){
     case ENUM_MSG_TYPE_REGIST_REQUEST:
         return m_pmh->Regist(pdu);
+        break;
     case ENUM_MSG_TYPE_LOGIN_REQUEST:
         return m_pmh->Login(pdu,m_strLogName);
+        break;
     case ENUM_MSG_TYPE_FINDUSER_REQUEST:
         return m_pmh->FindUser(pdu);
+        break;
     case ENUM_MSG_TYPE_ONLINEUSER_REQUEST:
         return m_pmh->OnlineUser();
+        break;
     case ENUM_MSG_TYPE_ADD_FRIEND_REQUEST:
         return m_pmh->AddFriend(pdu);
+        break;
     case ENUM_MSG_TYPE_ADD_FRIEND_AGREE_REQUEST:
         return m_pmh->AddFriendagree(pdu);
+        break;
     case ENUM_MSG_TYPE_GET_FRIEND_REQUEST:
         return m_pmh->GetFriend(pdu);
+        break;
+    case ENUM_MSG_TYPE_DEL_FRIEND_REQUEST:
+        return m_pmh->DelFriend(pdu);
+        break;
 
     default:
         break;

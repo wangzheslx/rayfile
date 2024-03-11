@@ -19,6 +19,7 @@ public:
     void requestaddfriend(PDU* pdu);
     void respondaddfriend();
     void getfriend(PDU*pdu);
+    void delfriend(PDU* pdu);
 };
 
 #endif // RESHANDLER_H

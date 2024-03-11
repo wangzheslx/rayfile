@@ -172,6 +172,51 @@ QStringList OperateDb::handleGetfriend(const char *name)
 
 }
 
+bool OperateDb::handleDelFriend(const char *curName, const char *tarName)
+{
+    if(curName==NULL||tarName==NULL){
+        qDebug()<<"name为空";
+        return false;
+    }
+    qDebug()<<"用户好友界面删除好友进行";
+    QString sql = QString(R"(
+                          select * from friend where
+                          (
+                            user_id = (select id from user_info where name = '%1')
+                            and
+                            friend_id = (select id from user_info where name = '%2')
+                           )
+                          or
+                          (
+                            user_id = (select id from user_info where name = '%3')
+                            and
+                            friend_id = (select id from user_info where name = '%4')
+                          );
+                          )").arg(curName).arg(tarName).arg(tarName).arg(curName);
+    QSqlQuery q;
+    q.exec(sql);
+    if(!q.next()){
+        qDebug()<<"数据库找不到好友";
+        return false;
+    }
+    sql = QString(R"(
+                     delete from friend where
+                     (
+                       user_id = (select id from user_info where name = '%1')
+                       and
+                       friend_id = (select id from user_info where name = '%2')
+                      )
+                     or
+                     (
+                       user_id = (select id from user_info where name = '%3')
+                       and
+                       friend_id = (select id from user_info where name = '%4')
+                     );
+                     )").arg(curName).arg(tarName).arg(tarName).arg(curName);
+    q.exec(sql);
+    return true;
+}
+
 OperateDb::~OperateDb()
 {
     m_db.close();

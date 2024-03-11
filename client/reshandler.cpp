@@ -112,6 +112,7 @@ void ResHandler::requestaddfriend(PDU *pdu)
 void ResHandler::respondaddfriend()
 {
     QMessageBox::information(Index::getinstance().getFriend(),"添加好友","添加好友成功");
+    Index::getinstance().getFriend()->flushFriend();
 }
 
 void ResHandler::getfriend(PDU *pdu)
@@ -124,5 +125,18 @@ void ResHandler::getfriend(PDU *pdu)
         friendlist.append(QString(name));
     }
     Index::getinstance().getFriend()->showfriend(friendlist);
+}
+
+void ResHandler::delfriend(PDU *pdu)
+{
+    bool flag;
+    memcpy(&flag,pdu->caData,sizeof(bool));
+    if(flag){
+        QMessageBox::information(Index::getinstance().getFriend(),"删除好友","成功");
+
+    }else{
+        QMessageBox::warning(Index::getinstance().getFriend(),"删除好友","失败");
+    }
+    Index::getinstance().getFriend()->flushFriend();
 }
 

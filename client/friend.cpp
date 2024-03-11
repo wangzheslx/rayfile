@@ -12,7 +12,7 @@ Friend::Friend(QWidget *parent) :
 {
     ui->setupUi(this);
     m_onlineuser = new OnlineUser;
-    on_flushFriend_PB_clicked();
+    flushFriend();
 }
 
 OnlineUser *Friend::getonlineuser()
@@ -31,6 +31,16 @@ void Friend::showfriend(QStringList list)
 {
     ui->listWidget->clear();
     ui->listWidget->addItems(list);
+}
+
+void Friend::flushFriend()
+{
+    qDebug()<<"刷新好友";
+    QString Curname = Client::getInstance().m_strLogName;
+    PDU* pdu = mkPDU(0);
+    pdu->uiMsgType = ENUM_MSG_TYPE_GET_FRIEND_REQUEST;
+    memcpy(pdu->caData,Curname.toStdString().c_str(),32);
+    Client::getInstance().sendPDU(pdu);
 }
 
 
@@ -80,10 +90,26 @@ void Friend::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void Friend::on_flushFriend_PB_clicked()
 {
-    qDebug()<<"刷新好友";
-    QString Curname = Client::getInstance().m_strLogName;
+    flushFriend();
+
+}
+
+void Friend::on_delFriend_PB_clicked()
+{
+    QListWidgetItem * pItem = ui->listWidget->currentItem();
+    if(!pItem){
+        QMessageBox::information(this,"删除好友","请选择要删除的好友");
+        return;
+    }
+    QString strname = pItem->text();
+    int ret = QMessageBox::question(this,"删除好友",QString("是否删除好友'%1'").arg(strname));
+    if(ret != QMessageBox::Yes){
+        return;
+    }
     PDU* pdu = mkPDU(0);
-    pdu->uiMsgType = ENUM_MSG_TYPE_GET_FRIEND_REQUEST;
-    memcpy(pdu->caData,Curname.toStdString().c_str(),32);
+    QString curname = Client::getInstance().m_strLogName;
+    pdu->uiMsgType = ENUM_MSG_TYPE_DEL_FRIEND_REQUEST;
+    memcpy(pdu->caData,curname.toStdString().c_str(),32);
+    memcpy(pdu->caData+32,strname.toStdString().c_str(),32);
     Client::getInstance().sendPDU(pdu);
 }

@@ -17,6 +17,7 @@ public:
     OnlineUser*getonlineuser();
     void getFriendRequest();
     void showfriend(QStringList list);
+    void flushFriend();
     ~Friend();
 
 private slots:
@@ -27,6 +28,8 @@ private slots:
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
     void on_flushFriend_PB_clicked();
+
+    void on_delFriend_PB_clicked();
 
 private:
     Ui::Friend *ui;

@@ -126,3 +126,17 @@ PDU *MsgHandle::GetFriend(PDU *pdu)
     return respdu;
 
 }
+
+PDU *MsgHandle::DelFriend(PDU *pdu)
+{
+    qDebug()<<"删除好友";
+    char caCurName[32] = {'\0'};
+    char caTarName[32] = {'\0'};
+    memcpy(caCurName,pdu->caData,32);
+    memcpy(caTarName,pdu->caData+32,32);
+    bool flag = OperateDb::getinstance().handleDelFriend(caCurName,caTarName);
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_DEL_FRIEND_RESPEND;
+    memcpy(respdu->caData,&flag,sizeof(bool));
+    return respdu;
+}

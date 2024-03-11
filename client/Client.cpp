@@ -103,7 +103,10 @@ void Client::handlePDU(PDU *pdu)
     case ENUM_MSG_TYPE_GET_FRIEND_RESPEND:{
         m_pmh->getfriend(pdu);
         break;
-
+    }
+    case ENUM_MSG_TYPE_DEL_FRIEND_RESPEND:{
+        m_pmh->delfriend(pdu);
+        break;
     }
     default:
         break;
@@ -191,3 +194,5 @@ void Client::on_login_PB_clicked()
     m_strLogName= strName;
     sendPDU(pdu);
 }
+
+
