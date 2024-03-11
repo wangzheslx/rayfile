@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Client.cpp \
+    chat.cpp \
     file.cpp \
     friend.cpp \
     index.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 
 HEADERS += \
     Client.h \
+    chat.h \
     file.h \
     friend.h \
     index.h \
@@ -36,6 +38,7 @@ HEADERS += \
 
 FORMS += \
     Client.ui \
+    chat.ui \
     file.ui \
     friend.ui \
     index.ui \

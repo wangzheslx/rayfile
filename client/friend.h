@@ -4,6 +4,7 @@
 #include <QListWidget>
 #include <QWidget>
 #include"onlineuser.h"
+#include "chat.h"
 namespace Ui {
 class Friend;
 }
@@ -15,6 +16,7 @@ class Friend : public QWidget
 public:
     explicit Friend(QWidget *parent = nullptr);
     OnlineUser*getonlineuser();
+    chat* getchat();
     void getFriendRequest();
     void showfriend(QStringList list);
     void flushFriend();
@@ -31,9 +33,12 @@ private slots:
 
     void on_delFriend_PB_clicked();
 
+    void on_chat_PB_clicked();
+
 private:
     Ui::Friend *ui;
     OnlineUser* m_onlineuser;
+    chat * m_chat;
 };
 
 #endif // FRIEND_H

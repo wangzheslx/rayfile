@@ -20,6 +20,7 @@ public:
     void respondaddfriend();
     void getfriend(PDU*pdu);
     void delfriend(PDU* pdu);
+    void updatechat(PDU* pdu,bool self = 0);
 };
 
 #endif // RESHANDLER_H

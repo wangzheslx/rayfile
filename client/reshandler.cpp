@@ -140,3 +140,27 @@ void ResHandler::delfriend(PDU *pdu)
     Index::getinstance().getFriend()->flushFriend();
 }
 
+void ResHandler::updatechat(PDU *pdu, bool self)
+{
+    if(Index::getinstance().getFriend()->getchat()->isHidden()){
+        Index::getinstance().getFriend()->getchat()->show();
+    }
+    QString sender;
+    QString opposite;
+    char curname[32] = {'\0'};
+    char tarname[32] = {'\0'};
+    memcpy(curname,pdu->caData,32);
+    memcpy(tarname,pdu->caData+32,32);
+    if(self){
+        sender = QString(curname);
+        opposite = QString(opposite);
+    }else{
+       sender = QString(curname);
+       opposite = QString(curname);
+    }
+    Index::getinstance().getFriend()->getchat()->show_TEXT(sender,opposite,pdu);
+
+}
+
+
+

@@ -108,6 +108,10 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->delfriend(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_CHAT_REQUEST:{
+        m_pmh->updatechat(pdu);
+        break;
+    }
     default:
         break;
     }

@@ -140,3 +140,8 @@ PDU *MsgHandle::DelFriend(PDU *pdu)
     memcpy(respdu->caData,&flag,sizeof(bool));
     return respdu;
 }
+
+void MsgHandle::ResendChat(PDU *pdu)
+{
+    MyTcpServer::getInstance().resend(pdu->caData+32,pdu);
+}

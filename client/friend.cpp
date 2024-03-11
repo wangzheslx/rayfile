@@ -12,12 +12,18 @@ Friend::Friend(QWidget *parent) :
 {
     ui->setupUi(this);
     m_onlineuser = new OnlineUser;
+    m_chat = new chat;
     flushFriend();
 }
 
 OnlineUser *Friend::getonlineuser()
 {
     return m_onlineuser;
+}
+
+chat *Friend::getchat()
+{
+    return m_chat;
 }
 
 void Friend::getFriendRequest()
@@ -48,6 +54,8 @@ void Friend::flushFriend()
 Friend::~Friend()
 {
     delete ui;
+    delete m_chat;
+    delete m_onlineuser;
 }
 
 void Friend::on_findUser_PB_clicked()
@@ -112,4 +120,18 @@ void Friend::on_delFriend_PB_clicked()
     memcpy(pdu->caData,curname.toStdString().c_str(),32);
     memcpy(pdu->caData+32,strname.toStdString().c_str(),32);
     Client::getInstance().sendPDU(pdu);
+}
+
+void Friend::on_chat_PB_clicked()
+{
+    QListWidgetItem * pItem = ui->listWidget->currentItem();
+    if(!pItem){
+        QMessageBox::information(this,"聊天","请选择要聊天的好友");
+        return;
+    }
+    m_chat->m_strChatName = pItem->text();
+    if(m_chat->isHidden()){
+        m_chat->show();
+    }
+
 }

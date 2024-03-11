@@ -19,6 +19,7 @@ public:
     PDU* AddFriendagree (PDU*pdu);
     PDU* GetFriend(PDU*pdu);
     PDU* DelFriend(PDU* pdu);
+    void ResendChat(PDU* pdu);
 
 };
 
