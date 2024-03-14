@@ -163,5 +163,16 @@ void ResHandler::updatechat(PDU *pdu, bool self)
 
 }
 
+void ResHandler::mkdir(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        QMessageBox::information(&Client::getInstance(),"新建文件","成功");
+    }else{
+        QMessageBox::information(&Client::getInstance(),"新建文件","失败");
+    }
+}
+
 
 

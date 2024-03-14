@@ -21,13 +21,20 @@ void Server::loadConfig()
         QStringList strList =  strdata.split("\r\n");
         m_strIP = strList.at(0);
         m_usPort = strList.at(1).toUShort();
-        qDebug()<<"IP:"<<m_strIP<< " PORT:"<<m_usPort;
+        m_strRootPath = strList.at(2);
+        qDebug()<<"IP:"<<m_strIP<< " PORT:"<<m_usPort<<" ROOT:"<<m_strRootPath;
         file.close();
 
     }else{
         QMessageBox::critical(this,"文件配置","文件打开错误");
     }
 }
+
+QString Server::getrootpath()
+{
+    return m_strRootPath;
+}
+
 
 Server::Server(QWidget *parent)
     : QWidget(parent)

@@ -1,7 +1,9 @@
 #include "msghandle.h"
+#include <server.h>
 #include "mytcpserver.h"
 #include "operatedb.h"
 #include<QDebug>
+#include <QDir>
 MsgHandle::MsgHandle()
 {
 
@@ -17,6 +19,8 @@ PDU* MsgHandle::Regist(PDU *pdu)
     bool ret =  OperateDb::getinstance().handleRegist(strname,strpwd);
     if(ret){
         qDebug()<<"注册成功";
+        QDir dir;
+        dir.mkdir(QString("%1/%2").arg(Server::getinstance().getrootpath()).arg(strname));
     }else{
         qDebug()<<"注册失败";
     }
@@ -144,4 +148,30 @@ PDU *MsgHandle::DelFriend(PDU *pdu)
 void MsgHandle::ResendChat(PDU *pdu)
 {
     MyTcpServer::getInstance().resend(pdu->caData+32,pdu);
+}
+
+PDU *MsgHandle::MkDir(PDU *pdu)
+{
+    qDebug()<<"新建文件夹";
+    pdu->caData[pdu->uiMsgLen] = '\0';
+    QString strcurpath = pdu->caMsg;
+    QDir dir;
+    bool res = false;
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_MKDIR_RESPEND;
+    if(!dir.exists(strcurpath)){
+        memcpy(respdu->caData,&res,sizeof(bool));
+        qDebug()<<"路径不存在";
+        return respdu;
+    }
+
+    QString strNewPath = QString("%1/%2").arg(strcurpath).arg(pdu->caData);
+    if(dir.exists(strNewPath) || !dir.mkdir(strNewPath)){
+        memcpy(respdu->caData,&res,sizeof(bool));
+        qDebug()<<"已经存在或则";
+        return respdu;
+    }
+    res = true;
+    memcpy(respdu->caData,&res,sizeof(bool));
+    return respdu;
 }

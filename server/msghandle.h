@@ -20,6 +20,7 @@ public:
     PDU* GetFriend(PDU*pdu);
     PDU* DelFriend(PDU* pdu);
     void ResendChat(PDU* pdu);
+    PDU* MkDir(PDU* pdu);
 
 };
 

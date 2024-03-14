@@ -70,7 +70,9 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         return m_pmh->DelFriend(pdu);
     case ENUM_MSG_TYPE_CHAT_REQUEST:
         m_pmh->ResendChat(pdu);
-
+        break;
+    case ENUM_MSG_TYPE_MKDIR_REQUEST:
+        return m_pmh->MkDir(pdu);
     default:
         break;
     }

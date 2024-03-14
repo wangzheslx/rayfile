@@ -47,6 +47,7 @@ void Client::loadConfig()
         QStringList strList =  strData.split("\r\n");
         m_strIP = strList.at(0);
         m_usPort = strList.at(1).toUShort();
+        m_rootPath = strList.at(2);
         qDebug()<<"IP:"<<m_strIP<< " PORT:"<<m_usPort;
         file.close();
     }else{
@@ -113,6 +114,10 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->updatechat(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_MKDIR_RESPEND:{
+        m_pmh->mkdir(pdu);
+        break;
+    }
     default:
         break;
     }
@@ -124,10 +129,16 @@ void Client::sendPDU(PDU *pdu)
 {
     qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
            <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
+             <<"uiMsgLen"<<pdu->uiMsgLen<<"uiPDUlen"<<pdu->uiPDUlen<<endl
           <<"数据"<<pdu->caMsg;
     m_tcpsocket.write((char*)pdu,pdu->uiPDUlen);
     free(pdu);
     pdu = NULL;
+}
+
+QString Client::getrootpath()
+{
+    return m_rootPath;
 }
 
 void Client::showConnect()

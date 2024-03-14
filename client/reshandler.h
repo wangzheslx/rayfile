@@ -21,6 +21,7 @@ public:
     void getfriend(PDU*pdu);
     void delfriend(PDU* pdu);
     void updatechat(PDU* pdu,bool self = 0);
+    void mkdir(PDU*pdu);
 };
 
 #endif // RESHANDLER_H

@@ -24,6 +24,7 @@ public:
     void sendPDU(PDU* pdu);
     ResHandler* m_pmh;
     QString m_strLogName;
+    QString getrootpath();
 
 public slots:
     void showConnect();
@@ -38,6 +39,7 @@ private:
     Ui::Client *ui;
     QString m_strIP;
     quint16 m_usPort;
+    QString m_rootPath;
     QTcpSocket m_tcpsocket;
     Client(QWidget *parent = nullptr);
     Client(const Client& instance) = delete;
