@@ -31,6 +31,7 @@ void ResHandler::login(PDU *pdu)
     if(ret){
         QMessageBox::information(&Client::getInstance(),"登录","登录成功");
         Index::getinstance().show();
+        Index::getinstance().setWindowTitle(Client::getInstance().m_strLogName);
         Client::getInstance().hide();
     }else{
         QMessageBox::information(&Client::getInstance(),"登录","登录失败，使用错误的名称或密码");

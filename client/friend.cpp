@@ -130,6 +130,7 @@ void Friend::on_chat_PB_clicked()
         return;
     }
     m_chat->m_strChatName = pItem->text();
+    m_chat->setWindowTitle("Chat With "+ m_chat->m_strChatName);
     if(m_chat->isHidden()){
         m_chat->show();
     }

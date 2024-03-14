@@ -11,8 +11,19 @@ chat::chat(QWidget *parent) :
 
 void chat::show_TEXT(QString sender,QString opposite,PDU* pdu)
 {
+    if(isHidden()){
+        show();
+    }
     m_strChatName = opposite;
-    ui->textEdit->append(QString("'%1':'%2'").arg(sender).arg(pdu->caMsg));
+    setWindowTitle("Chat With "+m_strChatName);
+    if(sender == Client::getInstance().m_strLogName){
+        ui->textEdit->setAlignment(Qt::AlignRight);//自己发送，在左边显示
+        ui->textEdit->append(QString("'%1':'%2'\n").arg(pdu->caMsg).arg(sender));
+    }else{
+        ui->textEdit->setAlignment(Qt::AlignLeft);//接收消息，在右边显示
+        ui->textEdit->append(QString("'%1':'%2'\n").arg(sender).arg(pdu->caMsg));
+    }
+
 
 }
 
@@ -34,7 +45,7 @@ void chat::on_pushButton_clicked()
 
     memcpy(pdu->caMsg,strmsg.toStdString().c_str(),pdu->uiMsgLen);
     ui->lineEdit->clear();
-    this->show_TEXT(Client::getInstance().m_strLogName,strmsg,pdu);
+    this->show_TEXT(Client::getInstance().m_strLogName,m_strChatName,pdu);
     Client::getInstance().sendPDU(pdu);
 
 }

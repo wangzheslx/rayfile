@@ -30,6 +30,7 @@ Client::Client(QWidget *parent)
     connect(&m_tcpsocket,&QTcpSocket::readyRead,this,&Client::recvMsg);
     m_tcpsocket.connectToHost(QHostAddress(m_strIP),m_usPort);
     m_pmh = new ResHandler;
+    setWindowTitle("自制网盘");
 }
 
 Client::~Client()
