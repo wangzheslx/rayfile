@@ -1,6 +1,8 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "protocol.h"
+
 #include <QWidget>
 
 namespace Ui {
@@ -13,13 +15,18 @@ class File : public QWidget
 
 public:
     explicit File(QWidget *parent = nullptr);
+    void flush_file();
+    void updateFileList(QList<FileInfo *> pFileList);
     ~File();
 
 private slots:
     void on_mkDir_PB_clicked();
 
+    void on_flushFile_PB_clicked();
+
 private:
     Ui::File *ui;
+    QList<FileInfo*> m_fileList;
     QString m_CurPath;
     QString m_RootPath;
 };

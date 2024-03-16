@@ -21,6 +21,7 @@ public:
     PDU* DelFriend(PDU* pdu);
     void ResendChat(PDU* pdu);
     PDU* MkDir(PDU* pdu);
+    PDU* flush_file(PDU* pdu);
 
 };
 

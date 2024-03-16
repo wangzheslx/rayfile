@@ -153,7 +153,7 @@ void MsgHandle::ResendChat(PDU *pdu)
 PDU *MsgHandle::MkDir(PDU *pdu)
 {
     qDebug()<<"新建文件夹";
-    pdu->caData[pdu->uiMsgLen] = '\0';
+    pdu->caMsg[pdu->uiMsgLen] = '\0';
     QString strcurpath = pdu->caMsg;
     QDir dir;
     bool res = false;
@@ -173,5 +173,34 @@ PDU *MsgHandle::MkDir(PDU *pdu)
     }
     res = true;
     memcpy(respdu->caData,&res,sizeof(bool));
+    return respdu;
+}
+
+PDU *MsgHandle::flush_file(PDU *pdu)
+{
+    pdu->caMsg[pdu->uiMsgLen] = '\0';
+    QString strpath = pdu->caMsg;
+    QDir dir(strpath);
+    QFileInfoList fileInforList =  dir.entryInfoList();
+    int iFileCount = fileInforList.size();
+
+    PDU* respdu = mkPDU((iFileCount-2)*sizeof(FileInfo));
+    respdu->uiMsgType = ENUM_MSG_TYPE_FLUSH_FILE_RESPEND;
+    QString strFileName;
+    FileInfo* pFileInfo = NULL;
+    //int index= 0;
+    for(int i = 0,j = 0;i<iFileCount;i++){
+        if(fileInforList[i].fileName() == "."||fileInforList[i].fileName() == "..")continue;
+        strFileName = fileInforList[i].fileName();
+        pFileInfo = (FileInfo*)(respdu->caMsg)+j++;
+        //index++;
+        memcpy(pFileInfo,strFileName.toStdString().c_str(),32);
+        if(fileInforList[i].isDir()){
+            pFileInfo->iFileType = 0;
+        }else if(fileInforList[i].isFile()){
+            pFileInfo->iFileType = 1;
+        }
+        qDebug()<<"filename :"<<strFileName<<"iFileType:"<<pFileInfo->iFileType;
+    }
     return respdu;
 }

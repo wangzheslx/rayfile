@@ -169,9 +169,23 @@ void ResHandler::mkdir(PDU *pdu)
     memcpy(&ret,pdu->caData,sizeof(bool));
     if(ret){
         QMessageBox::information(&Client::getInstance(),"新建文件","成功");
+        Index::getinstance().getFile()->flush_file();
     }else{
         QMessageBox::information(&Client::getInstance(),"新建文件","失败");
     }
+
+}
+
+void ResHandler::flush_file(PDU *pdu)
+{
+   int iCount = pdu->uiMsgLen/sizeof(FileInfo);
+   QList<FileInfo* >pFilelist;
+   for(int i = 0;i<iCount;i++){
+       FileInfo* pFileinfo = new FileInfo;
+       memcpy(pFileinfo,pdu->caMsg+i*sizeof(FileInfo),sizeof(FileInfo));
+       pFilelist.append(pFileinfo);
+   }
+   Index::getinstance().getFile()->updateFileList(pFilelist);
 }
 
 

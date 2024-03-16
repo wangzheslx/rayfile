@@ -73,6 +73,8 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         break;
     case ENUM_MSG_TYPE_MKDIR_REQUEST:
         return m_pmh->MkDir(pdu);
+    case ENUM_MSG_TYPE_FLUSH_FILE_REQUEST:
+        return m_pmh->flush_file(pdu);
     default:
         break;
     }

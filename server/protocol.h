@@ -39,6 +39,9 @@ enum ENUM_MSG_TYPE{
     //聊天
     ENUM_MSG_TYPE_MKDIR_REQUEST,
     ENUM_MSG_TYPE_MKDIR_RESPEND,
+    //刷新文件
+    ENUM_MSG_TYPE_FLUSH_FILE_REQUEST,
+    ENUM_MSG_TYPE_FLUSH_FILE_RESPEND,
     ENUM_MSG_TYPE_MAX = 0x00ffffff,
 };
 //协议数据结构体
@@ -48,6 +51,11 @@ struct PDU{
     uint uiMsgType;//协议消息类型
     char caData[64];//参数
     char caMsg[];//数据
+};
+
+struct FileInfo{
+    char CaName[32];
+    int iFileType;
 };
 
 PDU* mkPDU(uint uiMSGLen);

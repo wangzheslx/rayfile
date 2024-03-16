@@ -41,5 +41,5 @@ void Index::on_file_PB_clicked()
     ui->stackedWidget->setCurrentIndex(1);
     ui->friend_PB->setStyleSheet("QPushButton{border:none;background:rgba(255,255,255,0);padding:20px}");
     ui->file_PB->setStyleSheet("QPushButton{border:none;background:rgb(255,255,255);padding:20px}");
-
+    getFile()->flush_file();
 }
