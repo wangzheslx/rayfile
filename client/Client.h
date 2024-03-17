@@ -22,6 +22,7 @@ public:
     PDU* readPDU();
     void handlePDU(PDU* pdu);
     void sendPDU(PDU* pdu);
+    QByteArray buffer;
     ResHandler* m_pmh;
     QString m_strLogName;
     QString getrootpath();

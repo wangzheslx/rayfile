@@ -13,11 +13,11 @@ class MyTcpSocket : public QTcpSocket
 public:
     MyTcpSocket();
     ~MyTcpSocket();
-    PDU* readPDU();
+//    PDU* readPDU();
     PDU* handleMsg(PDU* pdu);
     void sendPDU(PDU* pdu);
 
-
+    QByteArray buffer;
     QString m_strLogName;
     MsgHandle* m_pmh;
 private:

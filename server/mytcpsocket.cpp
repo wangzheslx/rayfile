@@ -15,12 +15,23 @@ MyTcpSocket::~MyTcpSocket()
 
 void MyTcpSocket::recvMsg()
 {
-    PDU* pdu = readPDU();
-    PDU* respdu = handleMsg(pdu);
-    sendPDU(respdu);
-    free(pdu);
-    pdu = NULL;
-
+    //服务器粘包处理，客户端也要处理
+    QByteArray data = readAll();
+    buffer.append(data);
+    //处理沾包半包情况
+    //先判断包是否大于一个kongpdu的情况
+    while(buffer.size()>=int(sizeof(PDU))){
+        PDU* pdu = (PDU*)buffer.data();
+        //如果pdu不完整break继续读
+        if(int(pdu->uiPDUlen)>buffer.size()){
+            break;
+        }
+        //ok就发送
+        PDU* respdu = handleMsg(pdu);
+        sendPDU(respdu);
+        buffer.remove(0,pdu->uiPDUlen);
+    }
+    //这里pdu就不用释放了，不是用户自己在堆区申请的，而是重复利用的
 }
 
 void MyTcpSocket::clientOffline()
@@ -32,22 +43,22 @@ void MyTcpSocket::clientOffline()
     emit offline(this);
 }
 
-PDU *MyTcpSocket::readPDU()
-{
-    //socket处理消息
-    qDebug()<<"接收消息长度"<<this->bytesAvailable();
-    uint uiPDULen = 0;
-    //读取协议长度
-    this->read((char*)&uiPDULen,sizeof(uint));
-    uint uiMSGLen = uiPDULen-sizeof(PDU);
-    PDU *pdu = mkPDU(uiMSGLen);
-    //继续读取剩余数据
-    this->read((char*)pdu+sizeof(uint),uiPDULen-sizeof(uint));
-    qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
-           <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
-          <<"数据"<<pdu->caMsg;
-    return pdu;
-}
+//PDU *MyTcpSocket::readPDU()
+//{
+//    //socket处理消息
+//    qDebug()<<"接收消息长度"<<this->bytesAvailable();
+//    uint uiPDULen = 0;
+//    //读取协议长度
+//    this->read((char*)&uiPDULen,sizeof(uint));
+//    uint uiMSGLen = uiPDULen-sizeof(PDU);
+//    PDU *pdu = mkPDU(uiMSGLen);
+//    //继续读取剩余数据
+//    this->read((char*)pdu+sizeof(uint),uiPDULen-sizeof(uint));
+//    qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
+//           <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
+//          <<"数据"<<pdu->caMsg;
+//    return pdu;
+//}
 
 PDU *MyTcpSocket::handleMsg(PDU *pdu)
 {

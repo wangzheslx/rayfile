@@ -15,6 +15,7 @@ File::File(QWidget *parent) :
             .arg(Client::getInstance().getrootpath())
             .arg(Client::getInstance().m_strLogName);
     m_RootPath = m_CurPath;
+    flush_file();
 }
 
 void File::flush_file()

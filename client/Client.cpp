@@ -125,8 +125,6 @@ void Client::handlePDU(PDU *pdu)
     default:
         break;
     }
-    free(pdu);
-    pdu = NULL;
 }
 
 void Client::sendPDU(PDU *pdu)
@@ -152,8 +150,17 @@ void Client::showConnect()
 
 void Client::recvMsg()
 {
-    PDU* pdu = readPDU();
-    handlePDU(pdu);
+    QByteArray data = m_tcpsocket.readAll();
+    buffer.append(data);
+
+    while(buffer.size()>=int(sizeof(PDU))){
+        PDU* pdu = (PDU*)buffer.data();
+        if(int(pdu->uiPDUlen)>buffer.size()){
+            break;
+        }
+        handlePDU(pdu);
+        buffer.remove(0,pdu->uiPDUlen);
+    }
 }
 
 
