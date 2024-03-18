@@ -22,6 +22,13 @@ public:
     void ResendChat(PDU* pdu);
     PDU* MkDir(PDU* pdu);
     PDU* flush_file(PDU* pdu);
+    PDU* del_dir(PDU* pdu);
+    PDU* del_file(PDU* pdu);
+    PDU* rename_file(PDU* pdu);
+
+
+
+
 
 };
 

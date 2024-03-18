@@ -57,19 +57,19 @@ void Client::loadConfig()
     //    m_usPort = 5000;
 }
 
-PDU *Client::readPDU()
-{
-    qDebug()<<"接收消息长度"<<m_tcpsocket.bytesAvailable();
-    uint uiPDULen = 0;
-    //读取协议长度
-    m_tcpsocket.read((char*)&uiPDULen,sizeof(uint));
-    uint uiMSGLen = uiPDULen-sizeof(PDU);
-    PDU *pdu = mkPDU(uiMSGLen);
-    //继续读取剩余数据
-    m_tcpsocket.read((char*)pdu+sizeof(uint),uiPDULen-sizeof(uint));
+//PDU *Client::readPDU()
+//{
+//    qDebug()<<"接收消息长度"<<m_tcpsocket.bytesAvailable();
+//    uint uiPDULen = 0;
+//    //读取协议长度
+//    m_tcpsocket.read((char*)&uiPDULen,sizeof(uint));
+//    uint uiMSGLen = uiPDULen-sizeof(PDU);
+//    PDU *pdu = mkPDU(uiMSGLen);
+//    //继续读取剩余数据
+//    m_tcpsocket.read((char*)pdu+sizeof(uint),uiPDULen-sizeof(uint));
 
-    return pdu;
-}
+//    return pdu;
+//}
 
 void Client::handlePDU(PDU *pdu)
 {
@@ -122,6 +122,18 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->flush_file(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_DEL_DIR_RESPEND:{
+        m_pmh->del_dir(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_DEL_FILE_RESPEND:{
+        m_pmh->del_file(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_RENAME_FILE_RESPEND:{
+        m_pmh->rename_file(pdu);
+        break;
+    }
     default:
         break;
     }
@@ -159,6 +171,7 @@ void Client::recvMsg()
             break;
         }
         handlePDU(pdu);
+        //处理掉已接收的完整包
         buffer.remove(0,pdu->uiPDUlen);
     }
 }

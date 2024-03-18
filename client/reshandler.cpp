@@ -188,5 +188,40 @@ void ResHandler::flush_file(PDU *pdu)
    Index::getinstance().getFile()->updateFileList(pFilelist);
 }
 
+void ResHandler::del_dir(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        QMessageBox::information(&Client::getInstance(),"删除文件夹","成功");
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(&Client::getInstance(),"删除文件夹","失败");
+    }
+}
+
+void ResHandler::del_file(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        QMessageBox::information(&Client::getInstance(),"删除文件","成功");
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(&Client::getInstance(),"删除文件","失败");
+    }
+}
+
+void ResHandler::rename_file(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(&Client::getInstance(),"重命名文件","失败");
+    }
+}
+
 
 

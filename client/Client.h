@@ -19,7 +19,7 @@ public:
     QTcpSocket& getTcpsocket();
     ~Client();
     void loadConfig();
-    PDU* readPDU();
+//    PDU* readPDU();
     void handlePDU(PDU* pdu);
     void sendPDU(PDU* pdu);
     QByteArray buffer;

@@ -23,6 +23,9 @@ public:
     void updatechat(PDU* pdu,bool self = 0);
     void mkdir(PDU*pdu);
     void flush_file(PDU*pdu);
+    void del_dir(PDU* pdu);
+    void del_file(PDU* pdu);
+    void rename_file(PDU*pdu);
 };
 
 #endif // RESHANDLER_H

@@ -24,6 +24,12 @@ private slots:
 
     void on_flushFile_PB_clicked();
 
+    void on_delDir_PB_clicked();
+
+    void on_delFile_PB_clicked();
+
+    void on_rename_PB_clicked();
+
 private:
     Ui::File *ui;
     QList<FileInfo*> m_fileList;

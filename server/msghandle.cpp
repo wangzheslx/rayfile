@@ -153,7 +153,7 @@ void MsgHandle::ResendChat(PDU *pdu)
 PDU *MsgHandle::MkDir(PDU *pdu)
 {
     qDebug()<<"新建文件夹";
-    pdu->caMsg[pdu->uiMsgLen] = '\0';
+    //pdu->caMsg[pdu->uiMsgLen] = '\0';
     QString strcurpath = pdu->caMsg;
     QDir dir;
     bool res = false;
@@ -178,7 +178,7 @@ PDU *MsgHandle::MkDir(PDU *pdu)
 
 PDU *MsgHandle::flush_file(PDU *pdu)
 {
-    pdu->caMsg[pdu->uiMsgLen] = '\0';
+    //pdu->caMsg[pdu->uiMsgLen] = '\0';
     QString strpath = pdu->caMsg;
     QDir dir(strpath);
     QFileInfoList fileInforList =  dir.entryInfoList();
@@ -202,5 +202,61 @@ PDU *MsgHandle::flush_file(PDU *pdu)
         }
         qDebug()<<"filename :"<<strFileName<<"iFileType:"<<pFileInfo->iFileType;
     }
+    return respdu;
+}
+
+PDU *MsgHandle::del_dir(PDU *pdu)
+{
+    QFileInfo fileinfo(pdu->caMsg);
+    bool ret = false;
+    if(fileinfo.isDir()){
+       QDir dir(pdu->caMsg);
+       ret = dir.removeRecursively();
+    }
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_DEL_DIR_RESPEND;
+    memcpy(respdu->caData,&ret,sizeof(bool));
+    return respdu;
+}
+
+PDU *MsgHandle::del_file(PDU *pdu)
+{
+    QFileInfo fileinfo(pdu->caMsg);
+    bool ret = false;
+    if(fileinfo.isFile()){
+       QFile file(pdu->caMsg);
+       ret = file.remove();
+    }
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_DEL_FILE_RESPEND;
+    memcpy(respdu->caData,&ret,sizeof(bool));
+    return respdu;
+}
+
+PDU *MsgHandle::rename_file(PDU *pdu)
+{
+    char oldname[32] ={'\0'};
+    char newname[32] ={'\0'};
+    QString strcurpath = pdu->caMsg;
+    memcpy(oldname,pdu->caData,32);
+    memcpy(newname,pdu->caData+32,32);
+    QDir dir;
+    bool res = false;
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_RENAME_FILE_RESPEND;
+    if(!dir.exists(strcurpath)){
+        memcpy(respdu->caData,&res,sizeof(bool));
+        qDebug()<<"路径不存在";
+        return respdu;
+    }
+    QString strOldPath = QString("%1/%2").arg(strcurpath).arg(oldname);
+    QString strNewPath = QString("%1/%2").arg(strcurpath).arg(newname);
+    if(dir.exists(strNewPath)){
+        memcpy(respdu->caData,&res,sizeof(bool));
+        qDebug()<<"已经存在或则创建失败";
+        return respdu;
+    }
+    res = dir.rename(strOldPath,strNewPath);
+    memcpy(respdu->caData,&res,sizeof(bool));
     return respdu;
 }
