@@ -3,6 +3,7 @@
 
 #include "protocol.h"
 
+#include <QListWidgetItem>
 #include <QWidget>
 
 namespace Ui {
@@ -29,6 +30,10 @@ private slots:
     void on_delFile_PB_clicked();
 
     void on_rename_PB_clicked();
+
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_return_PB_clicked();
 
 private:
     Ui::File *ui;

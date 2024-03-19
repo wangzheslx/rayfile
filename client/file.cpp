@@ -172,3 +172,27 @@ void File::on_rename_PB_clicked()
     memcpy(pdu->caMsg,m_CurPath.toStdString().c_str(),m_CurPath.toStdString().size());
     Client::getInstance().sendPDU(pdu);
 }
+
+void File::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    QString strDirName = item->text();
+    foreach(FileInfo* pFileInfo,m_fileList){
+        if(pFileInfo->CaName == strDirName && pFileInfo->iFileType!=0){
+            QMessageBox::warning(this,"提示","选择的不是一个文件夹");
+            return;
+        }
+    }
+    m_CurPath = m_CurPath+"/" +strDirName;
+    flush_file();
+}
+
+void File::on_return_PB_clicked()
+{
+    if(m_CurPath == m_RootPath){
+        QMessageBox::warning(this,"返回","已在根目录，不可返回");
+        return;
+    }
+    int idx = m_CurPath.lastIndexOf('/');
+    m_CurPath.remove(idx,m_CurPath.size()-idx);
+    flush_file();
+}
