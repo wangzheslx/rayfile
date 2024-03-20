@@ -260,3 +260,33 @@ PDU *MsgHandle::rename_file(PDU *pdu)
     memcpy(respdu->caData,&res,sizeof(bool));
     return respdu;
 }
+
+PDU *MsgHandle::move_file(PDU *pdu)
+{
+    int srclen = 0;
+    int tarlen = 0;
+    memcpy(&srclen,pdu->caData,sizeof(int));
+    memcpy(&tarlen,pdu->caData+32,sizeof(int));
+
+    char *pScrPath = new char[srclen+1];
+    char* pTarPath = new char[tarlen+1];
+    memset(pScrPath,'\0',srclen+1);
+    memset(pTarPath,'\0',tarlen+1);
+
+
+    memcpy(pScrPath,pdu->caMsg,srclen);
+    memcpy(pTarPath,pdu->caMsg+srclen,tarlen);
+    qDebug()<<"pScrPath: "<<pScrPath<<"pTarPath: "<<pTarPath;
+    bool ret = QFile::rename(pScrPath,pTarPath);
+    qDebug()<<"rename"<<ret;
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_MOVE_FILE_RESPEND;
+    memcpy(respdu->caData,&ret,sizeof(bool));
+
+    delete [] pScrPath;
+    delete [] pTarPath;
+    pScrPath = NULL;
+    pTarPath = NULL;
+    return respdu;
+
+}

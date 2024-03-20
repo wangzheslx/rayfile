@@ -25,7 +25,7 @@ public:
     PDU* del_dir(PDU* pdu);
     PDU* del_file(PDU* pdu);
     PDU* rename_file(PDU* pdu);
-
+    PDU* move_file(PDU* pdu);
 
 
 

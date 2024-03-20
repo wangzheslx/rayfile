@@ -62,6 +62,9 @@ void MyTcpSocket::clientOffline()
 
 PDU *MyTcpSocket::handleMsg(PDU *pdu)
 {
+    qDebug()<<"recvMsg 数据类型"<<pdu->uiMsgType<<endl
+               <<"参数1"<<pdu->caData<<"参数2"<<pdu->caData+32<<endl
+              <<"数据"<<pdu->caMsg;
     switch(pdu->uiMsgType){
     case ENUM_MSG_TYPE_REGIST_REQUEST:
         return m_pmh->Regist(pdu);
@@ -92,6 +95,8 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         return m_pmh->del_file(pdu);
     case ENUM_MSG_TYPE_RENAME_FILE_REQUEST:
         return m_pmh->rename_file(pdu);
+    case ENUM_MSG_TYPE_MOVE_FILE_REQUEST:
+        return m_pmh->move_file(pdu);
     default:
         break;
     }

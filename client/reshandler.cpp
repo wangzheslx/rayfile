@@ -223,5 +223,16 @@ void ResHandler::rename_file(PDU *pdu)
     }
 }
 
+void ResHandler::move_file(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(Index::getinstance().getFile(),"移动文件","移动失败");
+    }
+}
+
 
 

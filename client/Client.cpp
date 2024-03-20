@@ -134,6 +134,10 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->rename_file(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_MOVE_FILE_RESPEND:{
+        m_pmh->move_file(pdu);
+        break;
+    }
     default:
         break;
     }

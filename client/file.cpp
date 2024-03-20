@@ -196,3 +196,50 @@ void File::on_return_PB_clicked()
     m_CurPath.remove(idx,m_CurPath.size()-idx);
     flush_file();
 }
+
+void File::on_moveFile_PB_clicked()
+{
+    if(ui->moveFile_PB->text()=="移动文件"){
+        QListWidgetItem* item = ui->listWidget->currentItem();
+        if(item == NULL){
+            QMessageBox::warning(this,"移动文件","请选择所要移动的文件");
+            return;
+        }
+        QMessageBox::information(this,"移动文件","请选择索要移动的目录");
+        ui->moveFile_PB->setText("确认/取消");
+        m_mvFile = item->text();
+        m_mvPath = m_CurPath+"/"+m_mvFile;
+        return;
+    }
+    QListWidgetItem* item = ui->listWidget->currentItem();
+    QString strTarPath;
+    QString boxMsg;
+    if(item == NULL){
+        strTarPath = m_CurPath+"/"+m_mvFile;
+        boxMsg = QString("是否移动到当前目录");
+    }else{
+        foreach(FileInfo* pfileinfo,m_fileList){
+            if(pfileinfo->CaName == item->text() && pfileinfo->iFileType!=0){
+                QMessageBox::warning(this,"提示","当前选择的不是文件夹");
+                return;
+            }
+        }
+        strTarPath = m_CurPath+"/"+item->text()+"/"+m_mvFile;
+        boxMsg = QString("是否移动到已选择的目录下");
+    }
+    int ret = QMessageBox::information(this,"移动文件",boxMsg,"确认","取消");
+    ui->moveFile_PB->setText("移动文件");
+    if(ret !=0){
+        return;
+    }
+    int srclen = m_mvPath.toStdString().size();
+    int tarlen = strTarPath.toStdString().size();
+    PDU* pdu = mkPDU(srclen+tarlen+1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_MOVE_FILE_REQUEST;
+    memcpy(pdu->caData,&srclen,sizeof(int));
+    memcpy(pdu->caData+32,&tarlen,sizeof(int));
+
+    memcpy(pdu->caMsg,m_mvPath.toStdString().c_str(),srclen);
+    memcpy(pdu->caMsg+srclen,strTarPath.toStdString().c_str(),tarlen);
+    Client::getInstance().sendPDU(pdu);
+}
