@@ -3,6 +3,7 @@
 
 #include "protocol.h"
 
+#include <QFile>
 #include <QString>
 
 
@@ -26,6 +27,12 @@ public:
     PDU* del_file(PDU* pdu);
     PDU* rename_file(PDU* pdu);
     PDU* move_file(PDU* pdu);
+    PDU* upload_file(PDU* pdu);
+
+    bool m_uploading;
+    QFile m_uploadFILE;
+    qint64 m_uploadtotal;
+    qint64 m_uploadedbyte;
 
 
 

@@ -27,6 +27,7 @@ public:
     void del_file(PDU* pdu);
     void rename_file(PDU*pdu);
     void move_file(PDU*pdu);
+    void uploading(PDU* pdu);
 };
 
 #endif // RESHANDLER_H

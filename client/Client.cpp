@@ -138,6 +138,10 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->move_file(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_UPLOAD_FILE_RESPEND:{
+        m_pmh->uploading(pdu);
+        break;
+    }
     default:
         break;
     }

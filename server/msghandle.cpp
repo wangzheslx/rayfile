@@ -6,7 +6,7 @@
 #include <QDir>
 MsgHandle::MsgHandle()
 {
-
+    m_uploading = false;
 }
 
 PDU* MsgHandle::Regist(PDU *pdu)
@@ -289,4 +289,34 @@ PDU *MsgHandle::move_file(PDU *pdu)
     pTarPath = NULL;
     return respdu;
 
+}
+
+PDU *MsgHandle::upload_file(PDU *pdu)
+{
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_UPLOAD_FILE_RESPEND;
+    int ret = 0;
+    if(m_uploading){
+        qDebug()<<"m_uploading is true";
+        ret = 1;
+        memcpy(respdu->caData,&ret,sizeof(bool));
+        return respdu;
+    }
+    char caFileName[32] = {'\0'};
+    qint64 filesize = 0;
+    memcpy(caFileName,pdu->caData,32);
+    memcpy(&filesize,pdu->caData+32,sizeof(qint64));
+    QString strPath = QString("%1/%2").arg(pdu->caMsg).arg(caFileName);
+    m_uploadFILE.setFileName(strPath);
+    if(m_uploadFILE.open(QIODevice::WriteOnly)){
+        m_uploading = true;
+        m_uploadtotal = filesize;
+        m_uploadedbyte = 0;
+    }else{
+        qDebug()<<"file open failed";
+        ret = -1;
+    }
+    qDebug()<<"upload start success";
+    memcpy(respdu->caData,&ret,sizeof(bool));
+    return respdu;
 }

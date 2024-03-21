@@ -3,6 +3,7 @@
 #include "ui_file.h"
 
 #include <QDialog>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 
@@ -15,6 +16,7 @@ File::File(QWidget *parent) :
             .arg(Client::getInstance().getrootpath())
             .arg(Client::getInstance().m_strLogName);
     m_RootPath = m_CurPath;
+    m_uploding = 0;
     flush_file();
 }
 
@@ -48,6 +50,35 @@ void File::updateFileList(QList<FileInfo *> pFileList)
         pItem->setText(pFileinfo->CaName);
         ui->listWidget->addItem(pItem);
     }
+}
+
+void File::uploadFile()
+{
+    QFile file(m_uploadfilePath);
+    if(!file.open(QIODevice::ReadOnly)){
+        QMessageBox::warning(this,"上传文件","打开文件失败");
+        return;
+    }
+    PDU* datapdu = mkPDU(4096);
+    datapdu->uiMsgType = ENUM_MSG_TYPE_UPLOADING_FILE_REQUEST;
+    qint64 ret = 0;
+    while(true){
+       ret = file.read(datapdu->caMsg,4096);
+       if(ret == 0){
+           break;
+       }
+       if(ret<0){
+           QMessageBox::warning(this,"上传文件","读取错误");
+           break;
+       }
+       datapdu->uiMsgLen = ret;
+       datapdu->uiPDUlen = ret+sizeof(PDU);
+       Client::getInstance().getTcpsocket().write((char*)datapdu,datapdu->uiPDUlen);
+    }
+    m_uploding = false;
+    file.close();
+    free(datapdu);
+    datapdu = NULL;
 }
 
 File::~File()
@@ -242,4 +273,30 @@ void File::on_moveFile_PB_clicked()
     memcpy(pdu->caMsg,m_mvPath.toStdString().c_str(),srclen);
     memcpy(pdu->caMsg+srclen,strTarPath.toStdString().c_str(),tarlen);
     Client::getInstance().sendPDU(pdu);
+}
+
+void File::on_uploadFile_PB_clicked()
+{
+    if(m_uploding){
+        QMessageBox::warning(this,"上传文件","有文件正在上传请稍后");
+        return;
+    }
+    m_uploadfilePath =  QFileDialog::getOpenFileName();
+    qDebug()<<"m_uploadfile"<<m_uploadfilePath;
+    int index = m_uploadfilePath.lastIndexOf('/');
+    QString strFilename = m_uploadfilePath.right(m_uploadfilePath.toStdString().size()-index-1);
+    if(strFilename.toStdString().size()>32){
+        QMessageBox::warning(this,"文件上传","文件名称超限");
+        return;
+    }
+    QFile file(m_uploadfilePath);
+    qint64 fsize= file.size();
+    PDU* pdu = mkPDU(m_CurPath.toStdString().size()+1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_UPLOAD_FILE_REQUEST;
+    memcpy(pdu->caMsg,m_CurPath.toStdString().c_str(),m_CurPath.toStdString().size());
+    memcpy(pdu->caData,strFilename.toStdString().c_str(),32);
+    memcpy(pdu->caData+32,&fsize,sizeof(qint64));
+    Client::getInstance().sendPDU(pdu);
+
+
 }

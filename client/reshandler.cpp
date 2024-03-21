@@ -234,5 +234,18 @@ void ResHandler::move_file(PDU *pdu)
     }
 }
 
+void ResHandler::uploading(PDU *pdu)
+{
+    int ret;
+    memcpy(&ret,pdu->caData,sizeof(int));
+    if(ret == -1){
+        QMessageBox::information(Index::getinstance().getFile(),"上传文件","服务器打开文件失败");
+    }else  if(ret == 1){
+        QMessageBox::information(Index::getinstance().getFile(),"上传文件","已有文件正在上传");
+    }else{
+        Index::getinstance().getFile()->uploadFile();
+    }
+}
+
 
 

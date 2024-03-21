@@ -18,6 +18,7 @@ public:
     explicit File(QWidget *parent = nullptr);
     void flush_file();
     void updateFileList(QList<FileInfo *> pFileList);
+    void uploadFile();
     ~File();
 
 private slots:
@@ -37,6 +38,8 @@ private slots:
 
     void on_moveFile_PB_clicked();
 
+    void on_uploadFile_PB_clicked();
+
 private:
     Ui::File *ui;
     QList<FileInfo*> m_fileList;
@@ -44,6 +47,8 @@ private:
     QString m_RootPath;
     QString m_mvPath;
     QString m_mvFile;
+    QString m_uploadfilePath;
+    bool m_uploding;
 };
 
 #endif // FILE_H
