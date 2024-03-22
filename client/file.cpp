@@ -16,7 +16,8 @@ File::File(QWidget *parent) :
             .arg(Client::getInstance().getrootpath())
             .arg(Client::getInstance().m_strLogName);
     m_RootPath = m_CurPath;
-    m_uploding = 0;
+    m_uploding = false;
+    m_downloading = false;
     flush_file();
     m_sharefile = new SahreFile;
 }
@@ -80,6 +81,44 @@ void File::uploadFile()
     file.close();
     free(datapdu);
     datapdu = NULL;
+}
+
+void File::dowmloadFile(qint64 fsize)
+{
+
+    m_saveFILE.setFileName(m_savePath);
+    if(!m_saveFILE.open(QIODevice::WriteOnly)){
+        QMessageBox::warning(this,"下载文件","客户端打开文件失败");
+        return;
+        //ret = 0;
+
+        //memcpy(pdu->caData,&ret,sizeof(bool));
+        //Client
+    }
+    m_downsize = fsize;
+    m_downedsize = 0;
+    m_downloading = true;
+    PDU* pdu = mkPDU(0);
+    pdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOADING_FILE_REQUEST;
+    Client::getInstance().sendPDU(pdu);
+
+}
+
+void File::downloadingFile(char *buffer, qint64 fsize)
+{
+    m_saveFILE.write(buffer,fsize);
+    m_downedsize+=fsize;
+    if(m_downedsize<m_downsize){
+        return;
+    }
+    m_saveFILE.close();
+    m_downloading = false;
+    bool ret = m_downsize==m_downedsize;
+    if(ret){
+        QMessageBox::information(this,"下载文件","下载文件成功");
+    }else{
+        QMessageBox::information(this,"下载文件","下载文件出错");
+    }
 }
 
 File::~File()
@@ -315,4 +354,30 @@ void File::on_shareFile_PB_clicked()
     if(m_sharefile->isHidden()){
         m_sharefile->show();
     }
+}
+
+void File::on_downloadFile_PB_clicked()
+{
+    if(m_downloading){
+        QMessageBox::warning(this,"下载文件","有文件正在下载请稍后");
+        return;
+    }
+    QListWidgetItem* pitem = ui->listWidget->currentItem();
+    if(pitem == NULL){
+        QMessageBox::warning(this,"下载文件","请选择所要下载的文件");
+        return ;
+    }
+    QString strfilename = pitem->text();
+    m_savePath.clear();
+    m_savePath =  QFileDialog::getSaveFileName();
+    if(m_savePath.isEmpty()){
+        QMessageBox::warning(this,"下载文件","请选择所要保存的位置");
+        return ;
+    }
+    qDebug()<<"m_savePath"<<m_savePath;
+    QString strpath = QString("%1/%2").arg(m_CurPath).arg(strfilename);
+    PDU* pdu = mkPDU(strpath.toStdString().size()+1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOAD_FILE_REQUEST;
+    memcpy(pdu->caMsg,strpath.toStdString().c_str(),strpath.toStdString().size());
+    Client::getInstance().sendPDU(pdu);
 }

@@ -146,6 +146,14 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->uploadingresp(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_DOWNLOAD_FILE_RESPEND:{
+        m_pmh->downloading(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_DOWNLOADING_FILE_RESPEND:{
+        m_pmh->downloadingresp(pdu);
+        break;
+    }
     default:
         break;
     }

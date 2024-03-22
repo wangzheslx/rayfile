@@ -3,7 +3,9 @@
 
 #include "protocol.h"
 #include "sahrefile.h"
+#include <QFile>
 #include <QListWidgetItem>
+#include <QUrl>
 #include <QWidget>
 
 namespace Ui {
@@ -19,6 +21,8 @@ public:
     void flush_file();
     void updateFileList(QList<FileInfo *> pFileList);
     void uploadFile();
+    void dowmloadFile(qint64 fsize);
+    void downloadingFile(char* buffer,qint64 fsize);
     ~File();
 
 private slots:
@@ -42,6 +46,8 @@ private slots:
 
     void on_shareFile_PB_clicked();
 
+    void on_downloadFile_PB_clicked();
+
 private:
     Ui::File *ui;
     QList<FileInfo*> m_fileList;
@@ -53,6 +59,12 @@ private:
     QString m_strsharefile;
     SahreFile * m_sharefile;
     bool m_uploding;
+
+    bool m_downloading;
+    QString m_savePath;
+    QFile m_saveFILE;
+    qint64 m_downsize;
+    qint64 m_downedsize;
 };
 
 #endif // FILE_H

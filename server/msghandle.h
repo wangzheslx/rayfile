@@ -2,11 +2,11 @@
 #define MSGHANDLE_H
 
 #include "protocol.h"
-
 #include <QFile>
 #include <QString>
 
 
+class MyTcpSocket;
 
 class MsgHandle
 {
@@ -29,11 +29,16 @@ public:
     PDU* move_file(PDU* pdu);
     PDU* upload_file(PDU* pdu);
     PDU* uploading_file(PDU* pdu);
+    PDU* download_file(PDU* pdu);
+    PDU* downloading_file(MyTcpSocket* m_tcpsocket);
 
     bool m_uploading;
     QFile m_uploadFILE;
     qint64 m_uploadtotal;
     qint64 m_uploadedbyte;
+
+    bool m_downloading;
+    QFile m_downloadFILE;
 
 
 

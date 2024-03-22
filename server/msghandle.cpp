@@ -1,12 +1,14 @@
 #include "msghandle.h"
 #include <server.h>
 #include "mytcpserver.h"
+#include "mytcpsocket.h"
 #include "operatedb.h"
 #include<QDebug>
 #include <QDir>
 MsgHandle::MsgHandle()
 {
     m_uploading = false;
+    m_downloading = false;
 }
 
 PDU* MsgHandle::Regist(PDU *pdu)
@@ -336,3 +338,57 @@ PDU *MsgHandle::uploading_file(PDU *pdu)
     memcpy(respdu->caData,&ret,sizeof(bool));
     return respdu;
 }
+
+PDU *MsgHandle::download_file(PDU *pdu)
+{
+    PDU* respdu =  mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOAD_FILE_RESPEND;
+    int ret =1;
+    if(m_downloading){
+        qDebug()<<"m_downloading is true";
+        ret = 0;
+        memcpy(respdu->caData,&ret,sizeof(int));
+        return respdu;
+    }
+    QString filepath = pdu->caMsg;
+    m_downloadFILE.setFileName(filepath);
+    //这种不对 QFile的文件获取size需要打开文件之后才能获取
+    //qint64 filesize = m_downloadFILE.size();
+    //不打开文件获取应该这样
+    QFileInfo fileInfo(pdu->caMsg);
+    qint64 filesize = fileInfo.size();
+    if(!m_downloadFILE.open(QIODevice::ReadOnly)){
+        ret = 0;
+        memcpy(respdu->caData,&ret,sizeof(int));
+        return respdu;
+    }
+    m_downloading = true;
+    memcpy(respdu->caData,&ret,sizeof(int));
+    memcpy(respdu->caData+32,&filesize,sizeof(qint64));
+    return respdu;
+
+}
+
+PDU *MsgHandle::downloading_file(MyTcpSocket *m_tcpsocket)
+{
+    qDebug()<<"真开始传输文件";
+    PDU* respdu = mkPDU(4096);
+    respdu->uiMsgType = ENUM_MSG_TYPE_DOWNLOADING_FILE_RESPEND;
+    qint64 ret = 0;
+    while(true){
+        ret = m_downloadFILE.read(respdu->caMsg,4096);
+        if(ret <=0){
+            break;
+        }
+        respdu->uiMsgLen = ret;
+        respdu->uiPDUlen = ret+sizeof(PDU);
+        m_tcpsocket->write((char*)respdu,respdu->uiPDUlen);
+    }
+    m_downloading  = false;
+    m_downloadFILE.close();
+
+    free(respdu);
+    respdu = NULL;
+    return NULL;
+}
+

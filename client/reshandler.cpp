@@ -259,5 +259,24 @@ void ResHandler::uploadingresp(PDU *pdu)
     }
 }
 
+void ResHandler::downloading(PDU *pdu)
+{
+    int ret;
+    memcpy(&ret,pdu->caData,sizeof(int));
+    if(ret){
+        qint64 fsize ;
+        memcpy(&fsize,pdu->caData+32,sizeof(qint64));
+        Index::getinstance().getFile()->dowmloadFile(fsize);
+
+    }else{
+        QMessageBox::warning(Index::getinstance().getFile(),"下载文件","服务器打开文件失败");
+    }
+}
+
+void ResHandler::downloadingresp(PDU *pdu)
+{
+    Index::getinstance().getFile()->downloadingFile(pdu->caMsg,pdu->uiMsgLen);
+}
+
 
 
