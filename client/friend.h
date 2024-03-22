@@ -20,6 +20,7 @@ public:
     void getFriendRequest();
     void showfriend(QStringList list);
     void flushFriend();
+    QListWidget* get_friend_LW();
     ~Friend();
 
 private slots:

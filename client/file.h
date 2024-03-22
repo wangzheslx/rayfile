@@ -2,7 +2,7 @@
 #define FILE_H
 
 #include "protocol.h"
-
+#include "sahrefile.h"
 #include <QListWidgetItem>
 #include <QWidget>
 
@@ -40,6 +40,8 @@ private slots:
 
     void on_uploadFile_PB_clicked();
 
+    void on_shareFile_PB_clicked();
+
 private:
     Ui::File *ui;
     QList<FileInfo*> m_fileList;
@@ -48,6 +50,8 @@ private:
     QString m_mvPath;
     QString m_mvFile;
     QString m_uploadfilePath;
+    QString m_strsharefile;
+    SahreFile * m_sharefile;
     bool m_uploding;
 };
 

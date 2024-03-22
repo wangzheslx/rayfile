@@ -28,6 +28,7 @@ public:
     void rename_file(PDU*pdu);
     void move_file(PDU*pdu);
     void uploading(PDU* pdu);
+    void uploadingresp(PDU* pdu);
 };
 
 #endif // RESHANDLER_H

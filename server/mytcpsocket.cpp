@@ -99,6 +99,8 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         return m_pmh->move_file(pdu);
     case ENUM_MSG_TYPE_UPLOAD_FILE_REQUEST:
         return m_pmh->upload_file(pdu);
+    case ENUM_MSG_TYPE_UPLOADING_FILE_REQUEST:
+        return m_pmh->uploading_file(pdu);
     default:
         break;
     }

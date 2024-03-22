@@ -247,5 +247,17 @@ void ResHandler::uploading(PDU *pdu)
     }
 }
 
+void ResHandler::uploadingresp(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        QMessageBox::information(Index::getinstance().getFile(),"上传文件","上传文件成功");
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(Index::getinstance().getFile(),"上传文件","上传文件失败");
+    }
+}
+
 
 

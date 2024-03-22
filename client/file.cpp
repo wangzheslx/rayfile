@@ -18,6 +18,7 @@ File::File(QWidget *parent) :
     m_RootPath = m_CurPath;
     m_uploding = 0;
     flush_file();
+    m_sharefile = new SahreFile;
 }
 
 void File::flush_file()
@@ -84,6 +85,7 @@ void File::uploadFile()
 File::~File()
 {
     delete ui;
+    delete m_sharefile;
 }
 
 void File::on_mkDir_PB_clicked()
@@ -284,7 +286,7 @@ void File::on_uploadFile_PB_clicked()
     m_uploadfilePath =  QFileDialog::getOpenFileName();
     qDebug()<<"m_uploadfile"<<m_uploadfilePath;
     int index = m_uploadfilePath.lastIndexOf('/');
-    QString strFilename = m_uploadfilePath.right(m_uploadfilePath.toStdString().size()-index-1);
+    QString strFilename = m_uploadfilePath.right(m_uploadfilePath.size()-index-1);//这里不能转stdstring,与上面的字符数不匹配了
     if(strFilename.toStdString().size()>32){
         QMessageBox::warning(this,"文件上传","文件名称超限");
         return;
@@ -299,4 +301,18 @@ void File::on_uploadFile_PB_clicked()
     Client::getInstance().sendPDU(pdu);
 
 
+}
+
+void File::on_shareFile_PB_clicked()
+{
+    QListWidgetItem *pitem = ui->listWidget->currentItem();
+    if(pitem==NULL){
+        QMessageBox::warning(this,"分享文件","请选择所要分享的文件");
+        return;
+    }
+    m_strsharefile = pitem->text();
+    m_sharefile->updateFriend_LW();
+    if(m_sharefile->isHidden()){
+        m_sharefile->show();
+    }
 }

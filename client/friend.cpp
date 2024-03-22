@@ -49,6 +49,11 @@ void Friend::flushFriend()
     Client::getInstance().sendPDU(pdu);
 }
 
+QListWidget *Friend::get_friend_LW()
+{
+    return ui->listWidget;
+}
+
 
 
 Friend::~Friend()

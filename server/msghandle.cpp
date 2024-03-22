@@ -320,3 +320,19 @@ PDU *MsgHandle::upload_file(PDU *pdu)
     memcpy(respdu->caData,&ret,sizeof(bool));
     return respdu;
 }
+
+PDU *MsgHandle::uploading_file(PDU *pdu)
+{
+    m_uploadFILE.write(pdu->caMsg,pdu->uiMsgLen);
+    m_uploadedbyte += pdu->uiMsgLen;
+    if(m_uploadedbyte<m_uploadtotal){
+        return NULL;
+    }
+    m_uploadFILE.close();
+    m_uploading = false;
+    PDU* respdu = mkPDU(0);
+    bool ret = m_uploadtotal==m_uploadedbyte;
+    respdu->uiMsgType = ENUM_MSG_TYPE_UPLOADING_FILE_RESPEND;
+    memcpy(respdu->caData,&ret,sizeof(bool));
+    return respdu;
+}

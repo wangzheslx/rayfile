@@ -28,6 +28,7 @@ public:
     PDU* rename_file(PDU* pdu);
     PDU* move_file(PDU* pdu);
     PDU* upload_file(PDU* pdu);
+    PDU* uploading_file(PDU* pdu);
 
     bool m_uploading;
     QFile m_uploadFILE;
