@@ -31,6 +31,8 @@ public:
     PDU* uploading_file(PDU* pdu);
     PDU* download_file(PDU* pdu);
     PDU* downloading_file(MyTcpSocket* m_tcpsocket);
+    PDU* shareFile(PDU* pdu);
+    PDU* shareFileAgree(PDU* pdu);
 
     bool m_uploading;
     QFile m_uploadFILE;

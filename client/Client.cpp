@@ -154,6 +154,18 @@ void Client::handlePDU(PDU *pdu)
         m_pmh->downloadingresp(pdu);
         break;
     }
+    case ENUM_MSG_TYPE_SHARE_FILE_RESPEND:{
+        m_pmh->sharefile();
+        break;
+    }
+    case ENUM_MSG_TYPE_SHARE_FILE_REQUEST:{
+        m_pmh->sharefileAgree(pdu);
+        break;
+    }
+    case ENUM_MSG_TYPE_SHARE_FILE_AGREE_RESPEND:{
+        m_pmh->sharefileRespond(pdu);
+        break;
+    }
     default:
         break;
     }

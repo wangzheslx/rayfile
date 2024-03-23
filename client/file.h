@@ -17,12 +17,16 @@ class File : public QWidget
     Q_OBJECT
 
 public:
+    QString m_CurPath;
+    QString m_RootPath;
+    QString m_strsharefile;
     explicit File(QWidget *parent = nullptr);
     void flush_file();
     void updateFileList(QList<FileInfo *> pFileList);
     void uploadFile();
     void dowmloadFile(qint64 fsize);
     void downloadingFile(char* buffer,qint64 fsize);
+    SahreFile* getshare();
     ~File();
 
 private slots:
@@ -51,12 +55,11 @@ private slots:
 private:
     Ui::File *ui;
     QList<FileInfo*> m_fileList;
-    QString m_CurPath;
-    QString m_RootPath;
+
     QString m_mvPath;
     QString m_mvFile;
     QString m_uploadfilePath;
-    QString m_strsharefile;
+
     SahreFile * m_sharefile;
     bool m_uploding;
 

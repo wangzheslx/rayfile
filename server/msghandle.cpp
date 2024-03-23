@@ -392,3 +392,51 @@ PDU *MsgHandle::downloading_file(MyTcpSocket *m_tcpsocket)
     return NULL;
 }
 
+PDU *MsgHandle::shareFile(PDU *pdu)
+{
+    qDebug()<<"shareFile";
+    char caCurName[32] = {'\0'};
+    int friendNum = 0;
+
+    memcpy(caCurName,pdu->caData,32);
+    memcpy(&friendNum,pdu->caData+32,sizeof(int));
+    qDebug()<<"caCurName"<<caCurName<<"friendNum"<<friendNum;
+    int friendsize = 32*friendNum;
+    PDU* resendpdu = mkPDU(pdu->uiMsgLen-friendsize);
+    resendpdu->uiMsgType = pdu->uiMsgType;
+
+    memcpy(resendpdu->caData,caCurName,32);
+    memcpy(resendpdu->caMsg,pdu->caMsg+friendsize,pdu->uiMsgLen-friendsize);
+    qDebug()<<"resendpdu->caData"<<resendpdu->caData<<"resendpdu->caMsg"<<resendpdu->caMsg;
+    char caRecvName[32] = {'\0'};
+    for(int i = 0;i<friendNum;i++){
+        memcpy(caRecvName,pdu->caMsg+32*i,32);
+        MyTcpServer::getInstance().resend(caRecvName,resendpdu);
+    }
+    free(resendpdu);
+    resendpdu = NULL;
+
+    PDU* respdu = mkPDU(0);
+    respdu->uiMsgType = ENUM_MSG_TYPE_SHARE_FILE_RESPEND;
+    return respdu;
+}
+
+PDU *MsgHandle::shareFileAgree(PDU *pdu)
+{
+    QString strSharePath = pdu->caMsg;
+    QString strRecvPath = QString("%1/%2").arg(Server::getinstance().getrootpath()).arg(pdu->caData);
+
+    int index = strSharePath.lastIndexOf('/');
+    QString strFileName = strSharePath.right(strSharePath.size()-index-1);
+    strRecvPath = strRecvPath+'/'+strFileName;
+    qDebug()<<"strSharePath"<<strSharePath<<"strRecvPath"<<strRecvPath;
+    bool ret = QFile::copy(strSharePath,strRecvPath);
+    qDebug()<<"ret:"<<ret;
+    PDU* respdu = mkPDU(0);
+    memcpy(respdu->caData,&ret,sizeof(bool));
+    respdu->uiMsgType = ENUM_MSG_TYPE_SHARE_FILE_AGREE_RESPEND;
+    return respdu;
+
+
+}
+

@@ -1,6 +1,7 @@
 #include "sahrefile.h"
 #include "ui_sahrefile.h"
 #include "index.h"
+#include "Client.h"
 SahreFile::SahreFile(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SahreFile)
@@ -40,5 +41,23 @@ void SahreFile::on_unselect_clicked()
 
 void SahreFile::on_confirm_clicked()
 {
+    //获取当前用户名和路径
+    QString strCurPath = Index::getinstance().getFile()->m_CurPath;
+    QString strPath = strCurPath+'/'+Index::getinstance().getFile()->m_strsharefile;
+    QString strCurName = Client::getInstance().m_strLogName;
+    //获取选择好友
+    QList<QListWidgetItem *> pItems = ui->listWidget->selectedItems();
+    int firendnum = pItems.size();
+    //构建PDU
+    qDebug()<<"strPath"<<strPath<<"strCurName"<<strCurName;
+    PDU* pdu = mkPDU(32*firendnum+strPath.toStdString().size()+1);
+    pdu->uiMsgType = ENUM_MSG_TYPE_SHARE_FILE_REQUEST;
 
+    memcpy(pdu->caData,strCurName.toStdString().c_str(),32);
+    memcpy(pdu->caData+32,&firendnum,sizeof(int));
+    for(int i = 0;i<firendnum;i++){
+        memcpy(pdu->caMsg+i*32,pItems.at(i)->text().toStdString().c_str(),32);
+    }
+    memcpy(pdu->caMsg+32*firendnum,strPath.toStdString().c_str(),strPath.toStdString().size());
+    Client::getInstance().sendPDU(pdu);
 }

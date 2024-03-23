@@ -31,6 +31,9 @@ public:
     void uploadingresp(PDU* pdu);
     void downloading(PDU* pdu);
     void downloadingresp(PDU* pdu);
+    void sharefile();
+    void sharefileAgree(PDU* pdu);
+    void sharefileRespond(PDU* pdu);
 };
 
 #endif // RESHANDLER_H

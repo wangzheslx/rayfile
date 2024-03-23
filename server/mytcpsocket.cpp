@@ -105,6 +105,10 @@ PDU *MyTcpSocket::handleMsg(PDU *pdu)
         return m_pmh->download_file(pdu);
     case ENUM_MSG_TYPE_DOWNLOADING_FILE_REQUEST:
         return m_pmh->downloading_file(this);
+    case ENUM_MSG_TYPE_SHARE_FILE_REQUEST:
+        return m_pmh->shareFile(pdu);
+    case ENUM_MSG_TYPE_SHARE_FILE_AGREE_REQUEST:
+        return m_pmh->shareFileAgree(pdu);
     default:
         break;
     }

@@ -121,6 +121,11 @@ void File::downloadingFile(char *buffer, qint64 fsize)
     }
 }
 
+SahreFile *File::getshare()
+{
+    return m_sharefile;
+}
+
 File::~File()
 {
     delete ui;

@@ -278,5 +278,40 @@ void ResHandler::downloadingresp(PDU *pdu)
     Index::getinstance().getFile()->downloadingFile(pdu->caMsg,pdu->uiMsgLen);
 }
 
+void ResHandler::sharefile()
+{
+    QMessageBox::information(Index::getinstance().getFile(),"分享文件","文件已分享");
+}
+
+void ResHandler::sharefileAgree(PDU *pdu)
+{
+    QString strSharePath = pdu->caMsg;
+    qDebug()<<"strSharePath"<<strSharePath;
+    int index = strSharePath.lastIndexOf('/');
+    QString strFileName = strSharePath.right(strSharePath.size()-index -1);
+     qDebug()<<"strFileName"<<strFileName;
+    int ret = QMessageBox::question(Index::getinstance().getFile()->getshare(),"分享文件",QString("%1 分享文件 %2\n是否接收？").arg(pdu->caData).arg(strFileName));
+    if(ret != QMessageBox::Yes){
+        return;
+    }
+    PDU* respdu = mkPDU(pdu->uiMsgLen);
+    respdu->uiMsgType = ENUM_MSG_TYPE_SHARE_FILE_AGREE_REQUEST;
+    memcpy(respdu->caData,Client::getInstance().m_strLogName.toStdString().c_str(),32);
+    memcpy(respdu->caMsg,pdu->caMsg,pdu->uiMsgLen);
+    Client::getInstance().sendPDU(respdu);
+}
+
+void ResHandler::sharefileRespond(PDU *pdu)
+{
+    bool ret;
+    memcpy(&ret,pdu->caData,sizeof(bool));
+    if(ret){
+        QMessageBox::information(Index::getinstance().getFile(),"分享文件","上传文件成功");
+        Index::getinstance().getFile()->flush_file();
+    }else{
+        QMessageBox::information(Index::getinstance().getFile(),"分享文件","上传失败");
+    }
+}
+
 
 
