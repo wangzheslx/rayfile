@@ -239,7 +239,8 @@ void File::on_rename_PB_clicked()
     QString strOldname = pItem->text();
     QString strNewname = QInputDialog::getText(this,"重命名文件","文件名：");
     if(strNewname.isEmpty() || strNewname.size()>32){
-        QMessageBox::warning(this,"重命名文件夹","名称长度非法");
+        if(strNewname.size()>32)
+            QMessageBox::warning(this,"重命名文件夹","名称长度非法");
         return;
     }
     PDU* pdu = mkPDU(m_CurPath.toStdString().size()+1);
@@ -331,6 +332,7 @@ void File::on_uploadFile_PB_clicked()
     qDebug()<<"m_uploadfile"<<m_uploadfilePath;
     int index = m_uploadfilePath.lastIndexOf('/');
     QString strFilename = m_uploadfilePath.right(m_uploadfilePath.size()-index-1);//这里不能转stdstring,与上面的字符数不匹配了
+    if(strFilename == NULL)return;
     if(strFilename.toStdString().size()>32){
         QMessageBox::warning(this,"文件上传","文件名称超限");
         return;
